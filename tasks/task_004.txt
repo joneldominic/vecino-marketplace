@@ -1,0 +1,37 @@
+# Task ID: 4
+# Title: Develop Product CRUD and Image Upload
+# Status: pending
+# Dependencies: 3
+# Priority: high
+# Description: Build product management functionality for Sellers with image upload to S3.
+# Details:
+Create REST endpoints for product CRUD operations. Implement S3 integration for image storage with presigned-URL upload flow. Limit product images to 3 per product. Build frontend components for product creation and management with drag-and-drop image upload. Implement soft delete functionality (isDeleted flag). Create Seller dashboard view for product management. Ensure proper validation of product data (title, price, stock).
+
+# Test Strategy:
+Write unit and integration tests for product endpoints. Test image upload flow with mocked S3. Create end-to-end tests for product creation and editing. Verify image limits and validation rules.
+
+# Subtasks:
+## 1. Implement Product CRUD REST API endpoints [pending]
+### Dependencies: None
+### Description: Create backend REST API endpoints for product creation, retrieval, update, and soft deletion
+### Details:
+Develop REST endpoints for: 1) POST /products - Create new product with validation for required fields (title, price, stock), 2) GET /products - List all products for a seller with pagination and filtering, 3) GET /products/:id - Get single product details, 4) PUT /products/:id - Update product information, 5) DELETE /products/:id - Implement soft delete by setting isDeleted flag to true. Include proper error handling and input validation for all endpoints. Create database schema with fields for title, description, price, stock, isDeleted flag, and array to store image URLs.
+
+## 2. Implement S3 integration for product images [pending]
+### Dependencies: 4.1
+### Description: Set up AWS S3 bucket and develop backend functionality for image upload using presigned URLs
+### Details:
+Configure AWS S3 bucket with appropriate permissions and CORS settings. Create service for generating presigned URLs for secure client-side uploads. Implement endpoint to request presigned URL (POST /products/image-upload). Add validation to limit 3 images per product. Develop functionality to associate uploaded image URLs with product records. Implement image deletion when products are updated or deleted. Create proper error handling for failed uploads and security measures to prevent unauthorized access.
+
+## 3. Build product management frontend components [pending]
+### Dependencies: 4.1
+### Description: Create React components for product creation, editing, and management with form validation
+### Details:
+Develop form components for product creation and editing with validation for required fields (title, price, stock). Implement form submission logic to create/update products via API. Create product listing view with pagination, sorting, and filtering options. Add product detail view with edit and delete functionality. Implement confirmation dialogs for destructive actions. Create reusable components for product cards and list items. Ensure responsive design for all screen sizes. Add loading states and error handling for API interactions.
+
+## 4. Implement drag-and-drop image upload functionality [pending]
+### Dependencies: 4.2, 4.3
+### Description: Create frontend components for image upload with drag-and-drop capability and S3 integration
+### Details:
+Develop drag-and-drop image upload component using React-Dropzone or similar library. Implement client-side image validation for file type and size. Create image preview functionality with ability to remove images before submission. Integrate with backend presigned URL flow: 1) Request URL from backend, 2) Upload directly to S3, 3) Save returned URL to product. Add progress indicators for uploads. Implement image reordering capability. Ensure limit of 3 images per product is enforced on frontend. Add error handling for failed uploads with user-friendly messages.
+

@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "generatedAt": "2025-04-20T11:46:44.265Z",
+    "tasksAnalyzed": 10,
+    "thresholdScore": 5,
+    "projectName": "Your Project Name",
+    "usedResearch": true
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "Setup Project Repository and Infrastructure",
+      "complexityScore": 8,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Break down the project repository and infrastructure setup into logical subtasks covering frontend initialization, backend setup, Docker configuration, CI/CD pipeline, and cloud deployment preparation. Include specific technical requirements for each platform.",
+      "reasoning": "This task involves multiple technologies (React+Vite, NestJS, MongoDB, Redis) and infrastructure components (Docker, GitHub Actions, AWS services). The monorepo structure adds coordination complexity, and proper CI/CD setup requires careful configuration across environments."
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "Implement Domain Models and Database Schema",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the domain modeling task into subtasks for each major domain entity (users, products, orders, etc.), including schema definition, repository implementation, and proper indexing. Include DDD pattern implementation for each bounded context.",
+      "reasoning": "Implementing proper domain models following DDD principles requires careful design. The task involves multiple collections with relationships, proper indexing for performance, and setting up both MongoDB and Redis connections with appropriate patterns."
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Implement Authentication and User Management",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down the authentication system implementation into backend authentication logic, frontend components, security measures, and user profile management. Include specific security considerations for each subtask.",
+      "reasoning": "Authentication is security-critical and involves both frontend and backend work. The task includes password hashing, JWT implementation, session management with Redis, CAPTCHA integration, and rate limiting, plus frontend components with validation."
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Develop Product CRUD and Image Upload",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Divide the product management functionality into backend API development, S3 integration for image handling, frontend form components, and seller dashboard implementation. Include validation requirements for each component.",
+      "reasoning": "This task combines standard CRUD operations with cloud storage integration for images. The complexity comes from handling image uploads to S3 with presigned URLs, implementing proper validation, and building a comprehensive seller dashboard."
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Implement Product Discovery and Search",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the product discovery system into search API implementation, frontend search components, product browsing interface, and responsive design optimization. Include performance considerations for each subtask.",
+      "reasoning": "This task requires implementing text search with MongoDB indexes, category filtering, and building responsive frontend components. The complexity includes handling pagination, implementing debounced search, and ensuring mobile-first design with dark mode support."
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Develop Cart and Checkout System",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the cart and checkout system into cart data model implementation, cart API endpoints, checkout process logic, order creation transaction handling, and frontend component development. Include validation requirements for each step.",
+      "reasoning": "Shopping cart functionality involves maintaining cart state, implementing checkout flow with business rules (single-seller restriction), and ensuring proper stock validation. The transactional nature of order creation adds complexity."
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Implement Order Management System",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Break down the order management system into order state machine implementation, seller order management API, buyer order history functionality, order details views, and cancellation logic. Include state transition validation for each status change.",
+      "reasoning": "This task involves implementing a state machine for order status with proper validation of transitions. It requires building separate interfaces for buyers and sellers, with different capabilities for each role, and ensuring proper business rules enforcement."
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Develop Buyer-Seller Messaging System",
+      "complexityScore": 6,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Divide the messaging system implementation into message data model and API endpoints, conversation threading logic, polling mechanism, and frontend messaging components. Include authorization requirements for each component.",
+      "reasoning": "The messaging system requires implementing conversation threading, polling for updates, and building interactive UI components. The complexity includes ensuring proper authorization for message access and managing unread message indicators."
+    },
+    {
+      "taskId": 9,
+      "taskTitle": "Implement Ratings and Reviews System",
+      "complexityScore": 5,
+      "recommendedSubtasks": 4,
+      "expansionPrompt": "Break down the ratings and reviews system into review data model and API endpoints, product rating calculation, review submission components, and review display implementation. Include validation rules for each component.",
+      "reasoning": "This task involves implementing a standard reviews system with validation to ensure one review per order and post-delivery submission. The complexity is moderate, focusing on proper validation, calculating average ratings, and building appropriate UI components."
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Develop In-App Notifications and Seller Analytics",
+      "complexityScore": 7,
+      "recommendedSubtasks": 5,
+      "expansionPrompt": "Divide the notifications and analytics system into real-time notification channel implementation, notification UI components, event triggers, seller analytics dashboard, and data aggregation pipeline. Include performance considerations for each component.",
+      "reasoning": "This task combines real-time notifications (WebSocket/SSE) with data analytics requiring MongoDB aggregation pipelines. The complexity comes from implementing real-time features, building a notification center with state management, and creating meaningful analytics visualizations."
+    }
+  ]
+}

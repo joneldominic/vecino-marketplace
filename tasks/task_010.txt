@@ -1,0 +1,43 @@
+# Task ID: 10
+# Title: Develop In-App Notifications and Seller Analytics
+# Status: pending
+# Dependencies: 7, 8, 9
+# Priority: low
+# Description: Implement notification system for order events and messages, plus basic analytics for Sellers.
+# Details:
+Create lightweight WebSocket or SSE channel for real-time notifications. Implement notification center UI with read/unread status. Build notification triggers for order status changes and new messages. Create Seller analytics dashboard with sales totals and top products. Implement MongoDB aggregation pipeline for order data analysis. Add notification preferences settings. Ensure mobile-friendly notification display.
+
+# Test Strategy:
+Test notification delivery for various events. Verify analytics calculations match expected results. Create end-to-end tests for notification flow from trigger to display. Test analytics dashboard with various data scenarios.
+
+# Subtasks:
+## 1. Implement WebSocket/SSE notification channel [pending]
+### Dependencies: None
+### Description: Set up the server-side infrastructure for real-time notifications using WebSocket or Server-Sent Events
+### Details:
+Create a WebSocket server or SSE endpoint that can push notifications to connected clients. Implement connection management, authentication for secure connections, and basic message formatting. Set up event listeners on the server for notification triggers (order status changes, new messages). Test the connection with simple notification payloads to ensure reliability.
+
+## 2. Build notification center UI with read/unread status [pending]
+### Dependencies: 10.1
+### Description: Develop the frontend UI components for displaying notifications and tracking read status
+### Details:
+Create a notification center component that connects to the WebSocket/SSE channel. Implement UI for displaying notification items with timestamps, read/unread indicators, and notification types. Add a notification counter badge. Store notification read status in the database. Ensure the UI is responsive and works well on mobile devices. Include animations for new notifications and implement notification grouping for better organization.
+
+## 3. Implement notification triggers and preferences [pending]
+### Dependencies: 10.1, 10.2
+### Description: Create backend logic for generating notifications based on system events and user preference settings
+### Details:
+Implement event listeners for order status changes, new messages, and other relevant events. Create notification templates for different event types. Build a notification preferences page allowing sellers to choose which notifications they receive. Store preferences in the database and respect them when sending notifications. Implement notification throttling to prevent overwhelming users with too many notifications.
+
+## 4. Create MongoDB aggregation pipeline for seller data analysis [pending]
+### Dependencies: None
+### Description: Develop backend services to analyze order and product data for seller analytics
+### Details:
+Design and implement MongoDB aggregation pipelines to calculate key metrics: total sales, sales by time period, top-selling products, average order value, and customer retention. Create API endpoints to retrieve these analytics. Implement caching for performance optimization. Add data validation and error handling. Document the aggregation pipelines for future maintenance.
+
+## 5. Build seller analytics dashboard UI [pending]
+### Dependencies: 10.4
+### Description: Develop the frontend UI for displaying seller analytics with charts and data visualizations
+### Details:
+Create a responsive analytics dashboard with charts and graphs using a visualization library like Chart.js or D3.js. Implement components for displaying sales totals, top products, and trend analysis. Add date range filters for customizing the data view. Ensure all visualizations are mobile-friendly with appropriate layouts for different screen sizes. Include export functionality for analytics data. Add loading states and error handling for data fetching.
+

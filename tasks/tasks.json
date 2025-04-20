@@ -1,0 +1,622 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Setup Project Repository and Infrastructure",
+      "description": "Initialize the project repository with React+Vite frontend and NestJS backend, configure CI/CD pipeline, and set up Docker files.",
+      "status": "pending",
+      "dependencies": [],
+      "priority": "high",
+      "details": "Create a monorepo structure with separate folders for frontend and backend. Frontend: Initialize with Vite, React, Zustand, and TanStack Query. Backend: Set up NestJS with MongoDB and Redis connections. Configure ESLint, Prettier, and Jest. Create Docker files for local development and production. Set up GitHub Actions for CI/CD pipeline with linting and testing. Configure AWS Elastic Beanstalk, S3, and CloudFront deployment scripts.",
+      "testStrategy": "Verify CI pipeline runs successfully with passing linting and tests. Ensure Docker containers build and run locally. Test deployment scripts with a staging environment.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Initialize Monorepo Structure",
+          "description": "Create the base monorepo structure with separate directories for frontend and backend, and set up shared configuration files.",
+          "dependencies": [],
+          "details": "1. Create a new repository on GitHub\n2. Initialize the local repository with git\n3. Create the following directory structure:\n   - `/frontend`: For React+Vite application\n   - `/backend`: For NestJS application\n   - `/shared`: For shared types and utilities\n4. Set up root package.json with workspaces configuration\n5. Create root-level .gitignore, README.md, and LICENSE files\n6. Configure root-level tsconfig.json with path aliases\n7. Set up initial commit and push to GitHub\n8. Test by ensuring the repository structure is properly created and accessible",
+          "status": "pending",
+          "parentTaskId": 1
+        },
+        {
+          "id": 2,
+          "title": "Set Up Frontend with Vite, React, Zustand, and TanStack Query",
+          "description": "Initialize and configure the frontend application with Vite, React, TypeScript, Zustand for state management, and TanStack Query for data fetching.",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Navigate to `/frontend` directory\n2. Initialize a new Vite project with React and TypeScript template\n3. Install and configure dependencies:\n   - Zustand for state management\n   - TanStack Query for API data fetching\n   - React Router for navigation\n   - Axios for HTTP requests\n4. Set up the basic application structure:\n   - Create `/src/components`, `/src/pages`, `/src/hooks`, `/src/store`, and `/src/api` directories\n   - Set up a basic Zustand store\n   - Configure TanStack Query client\n5. Create a simple test component to verify the setup\n6. Test by running the development server and ensuring the application renders correctly",
+          "status": "pending",
+          "parentTaskId": 1
+        },
+        {
+          "id": 3,
+          "title": "Set Up Backend with NestJS, MongoDB, and Redis",
+          "description": "Initialize and configure the backend application with NestJS, TypeScript, MongoDB for database, and Redis for caching.",
+          "dependencies": [
+            1
+          ],
+          "details": "1. Navigate to `/backend` directory\n2. Initialize a new NestJS project using the Nest CLI\n3. Install and configure dependencies:\n   - MongoDB driver and Mongoose for database operations\n   - Redis client for caching\n   - Class-validator and class-transformer for DTO validation\n   - Passport and JWT for authentication\n4. Set up environment configuration with dotenv\n5. Create database connection modules for MongoDB and Redis\n6. Implement health check endpoint\n7. Set up basic module structure with controllers and services\n8. Test by running the server and verifying the health check endpoint works",
+          "status": "pending",
+          "parentTaskId": 1
+        },
+        {
+          "id": 4,
+          "title": "Configure Code Quality Tools",
+          "description": "Set up and configure ESLint, Prettier, and Jest for both frontend and backend to ensure code quality and testing capabilities.",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "1. Set up ESLint in root directory with appropriate configurations for both frontend and backend\n2. Configure Prettier for consistent code formatting\n3. Set up Jest for testing in both frontend and backend:\n   - Configure Jest for React components in frontend\n   - Set up Jest for NestJS in backend\n4. Create pre-commit hooks with husky and lint-staged\n5. Add npm scripts in root package.json for linting and testing all workspaces\n6. Create sample tests for both frontend and backend\n7. Test by running lint and test commands from the root directory",
+          "status": "pending",
+          "parentTaskId": 1
+        },
+        {
+          "id": 5,
+          "title": "Create Docker Configuration",
+          "description": "Set up Docker and Docker Compose files for local development and production environments.",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "1. Create Dockerfile for frontend:\n   - Development version with hot reloading\n   - Production version with build optimization\n2. Create Dockerfile for backend:\n   - Development version with hot reloading\n   - Production version with optimized build\n3. Set up Docker Compose files:\n   - docker-compose.dev.yml for local development with MongoDB and Redis services\n   - docker-compose.prod.yml for production setup\n4. Create .dockerignore files for both frontend and backend\n5. Add npm scripts for Docker operations\n6. Test by building and running containers locally, ensuring both frontend and backend services are accessible",
+          "status": "pending",
+          "parentTaskId": 1
+        },
+        {
+          "id": 6,
+          "title": "Set Up CI/CD Pipeline with AWS Deployment",
+          "description": "Configure GitHub Actions for CI/CD pipeline and set up deployment scripts for AWS services including Elastic Beanstalk, S3, and CloudFront.",
+          "dependencies": [
+            4,
+            5
+          ],
+          "details": "1. Create GitHub Actions workflow files:\n   - Lint and test workflow for pull requests\n   - Build and deploy workflow for main branch\n2. Set up AWS deployment configuration:\n   - Configure Elastic Beanstalk for backend deployment\n   - Set up S3 bucket for frontend static files\n   - Configure CloudFront distribution for frontend CDN\n3. Create deployment scripts:\n   - Backend deployment to Elastic Beanstalk\n   - Frontend build and upload to S3\n   - CloudFront cache invalidation\n4. Set up GitHub repository secrets for AWS credentials\n5. Create infrastructure as code using AWS CDK or Terraform (optional)\n6. Test the CI/CD pipeline by making a small change, pushing to GitHub, and verifying the automated deployment",
+          "status": "pending",
+          "parentTaskId": 1
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Implement Domain Models and Database Schema",
+      "description": "Define core data models and schema for MongoDB collections following DDD principles.",
+      "status": "pending",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "Create Mongoose schemas for users, products, orders, messages, and reviews collections as specified in the PRD. Implement repository interfaces for each domain entity. Set up MongoDB Atlas connection with proper indexes (especially text indexes for product search). Configure Redis for session store. Implement DDD patterns with bounded contexts (Catalog, Ordering, Messaging), entities/aggregates, and value objects. Set up database migration scripts.",
+      "testStrategy": "Write unit tests for models and repositories with 80%+ coverage. Create integration tests that verify database operations. Test indexes for performance with sample data.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Define Domain Bounded Contexts and Core Entities",
+          "description": "Establish the domain model structure by defining bounded contexts (Catalog, Ordering, Messaging) and core entities with their relationships following DDD principles.",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Create a domain model diagram showing bounded contexts and their relationships. Define entity classes for each context: User (shared), Product/Category (Catalog), Order/OrderItem (Ordering), Message/Conversation (Messaging), and Review (Catalog). Implement value objects for complex attributes like Address, Money, ProductSpecification. Ensure proper encapsulation of business rules within entities. Document aggregate roots and entity relationships."
+        },
+        {
+          "id": 2,
+          "title": "Implement Mongoose Schemas and Validation",
+          "description": "Create Mongoose schemas for all domain entities with proper validation rules, indexes, and relationships.",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Implement Mongoose schemas for users (with authentication fields, profile data), products (with text indexes for search, category references), orders (with line items, status tracking), messages (with conversation threading), and reviews (with product references). Add validation rules for each field. Create indexes for frequently queried fields. Implement schema methods for common operations. Set up text indexes for product search. Document each schema with JSDoc comments."
+        },
+        {
+          "id": 3,
+          "title": "Create Repository Interfaces and Implementations",
+          "description": "Develop repository interfaces and concrete implementations for each domain entity to abstract database operations.",
+          "status": "pending",
+          "dependencies": [
+            2
+          ],
+          "details": "Create a base Repository interface with standard CRUD operations. Implement entity-specific repositories (UserRepository, ProductRepository, OrderRepository, MessageRepository, ReviewRepository) with specialized query methods. Use the repository pattern to abstract database access from domain logic. Implement pagination for collection queries. Add methods for complex domain-specific queries. Include transaction support for operations spanning multiple entities."
+        },
+        {
+          "id": 4,
+          "title": "Configure Database Connections and Session Store",
+          "description": "Set up MongoDB Atlas connection with proper configuration and Redis for session management.",
+          "status": "pending",
+          "dependencies": [
+            3
+          ],
+          "details": "Configure MongoDB connection with proper error handling, retry logic, and connection pooling. Set up MongoDB Atlas with appropriate security settings. Implement environment-specific configuration. Configure Redis connection for session storage with proper TTL settings. Implement health checks for both database connections. Create a database service module to manage connections. Document connection string formats and required environment variables."
+        },
+        {
+          "id": 5,
+          "title": "Implement Database Migration and Seeding Scripts",
+          "description": "Create scripts for database migrations and initial data seeding to support development and deployment.",
+          "status": "pending",
+          "dependencies": [
+            2,
+            4
+          ],
+          "details": "Implement migration framework (like migrate-mongo) to handle schema changes. Create initial migration script to set up collections and indexes. Develop data seeding scripts for development and testing environments with sample users, products, orders, and reviews. Implement versioning for migrations. Add CLI commands to run migrations and seeds. Create documentation for database maintenance operations. Implement backup and restore procedures."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Implement Authentication and User Management",
+      "description": "Build user registration, login, and session management for both Buyers and Sellers.",
+      "status": "pending",
+      "dependencies": [
+        2
+      ],
+      "priority": "high",
+      "details": "Implement email/password registration and login endpoints with bcrypt password hashing. Create JWT-based authentication middleware. Set up Redis for session storage. Implement user profile management. Add CAPTCHA for registration and rate limiting for auth APIs to prevent spam. Create frontend components for login, registration, and profile pages with form validation. Implement protected routes in the frontend.",
+      "testStrategy": "Write unit and integration tests for auth endpoints. Test password hashing, JWT validation, and session management. Create end-to-end tests for registration and login flows. Verify rate limiting and CAPTCHA functionality.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Backend Authentication Core",
+          "description": "Create the core authentication endpoints and password handling for user registration and login",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Create Express routes for /auth/register and /auth/login. Implement bcrypt for password hashing and verification. Set up user schema with proper validation for email and password strength. Create database models for both Buyer and Seller user types with appropriate fields. Implement basic input validation middleware. Return appropriate HTTP status codes and error messages for different authentication scenarios."
+        },
+        {
+          "id": 2,
+          "title": "Implement JWT Authentication and Middleware",
+          "description": "Create JWT token generation, validation, and authentication middleware",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Set up JWT signing with appropriate secret key and expiration time. Create middleware to verify JWT tokens from Authorization header. Implement token refresh mechanism. Add user role verification (Buyer vs Seller) in the middleware. Create protected route wrappers that can be applied to endpoints requiring authentication. Implement proper error handling for token validation failures. Store JWT secret in environment variables."
+        },
+        {
+          "id": 3,
+          "title": "Set Up Session Management with Redis",
+          "description": "Implement Redis-based session storage and management",
+          "status": "pending",
+          "dependencies": [
+            2
+          ],
+          "details": "Set up Redis connection with appropriate configuration. Create session storage and retrieval functions. Implement session invalidation for logouts. Add session lookup to the authentication middleware. Create mechanisms to force logout across all devices if needed. Implement session expiration and cleanup. Add rate limiting for authentication attempts using Redis counters. Configure proper Redis persistence settings."
+        },
+        {
+          "id": 4,
+          "title": "Implement User Profile Management and Security Features",
+          "description": "Create user profile CRUD operations and add security features",
+          "status": "pending",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "Create endpoints for viewing and updating user profiles. Implement CAPTCHA verification for registration using a service like reCAPTCHA. Add rate limiting middleware for auth APIs to prevent brute force attacks. Implement email verification flow. Add password reset functionality with secure tokens. Create account deletion and deactivation features. Implement proper logging for security-relevant events."
+        },
+        {
+          "id": 5,
+          "title": "Create Frontend Authentication Components",
+          "description": "Build frontend components for authentication and user management",
+          "status": "pending",
+          "dependencies": [
+            4
+          ],
+          "details": "Create React components for login and registration forms with client-side validation. Implement protected route components that redirect unauthenticated users. Build user profile edit page with form validation. Create authentication context/provider to manage auth state across the application. Implement token storage in localStorage or cookies with proper security considerations. Add CAPTCHA components to registration form. Create loading states and error handling for auth operations. Implement automatic token refresh mechanism in the frontend."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Develop Product CRUD and Image Upload",
+      "description": "Build product management functionality for Sellers with image upload to S3.",
+      "status": "pending",
+      "dependencies": [
+        3
+      ],
+      "priority": "high",
+      "details": "Create REST endpoints for product CRUD operations. Implement S3 integration for image storage with presigned-URL upload flow. Limit product images to 3 per product. Build frontend components for product creation and management with drag-and-drop image upload. Implement soft delete functionality (isDeleted flag). Create Seller dashboard view for product management. Ensure proper validation of product data (title, price, stock).",
+      "testStrategy": "Write unit and integration tests for product endpoints. Test image upload flow with mocked S3. Create end-to-end tests for product creation and editing. Verify image limits and validation rules.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Product CRUD REST API endpoints",
+          "description": "Create backend REST API endpoints for product creation, retrieval, update, and soft deletion",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Develop REST endpoints for: 1) POST /products - Create new product with validation for required fields (title, price, stock), 2) GET /products - List all products for a seller with pagination and filtering, 3) GET /products/:id - Get single product details, 4) PUT /products/:id - Update product information, 5) DELETE /products/:id - Implement soft delete by setting isDeleted flag to true. Include proper error handling and input validation for all endpoints. Create database schema with fields for title, description, price, stock, isDeleted flag, and array to store image URLs."
+        },
+        {
+          "id": 2,
+          "title": "Implement S3 integration for product images",
+          "description": "Set up AWS S3 bucket and develop backend functionality for image upload using presigned URLs",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Configure AWS S3 bucket with appropriate permissions and CORS settings. Create service for generating presigned URLs for secure client-side uploads. Implement endpoint to request presigned URL (POST /products/image-upload). Add validation to limit 3 images per product. Develop functionality to associate uploaded image URLs with product records. Implement image deletion when products are updated or deleted. Create proper error handling for failed uploads and security measures to prevent unauthorized access."
+        },
+        {
+          "id": 3,
+          "title": "Build product management frontend components",
+          "description": "Create React components for product creation, editing, and management with form validation",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Develop form components for product creation and editing with validation for required fields (title, price, stock). Implement form submission logic to create/update products via API. Create product listing view with pagination, sorting, and filtering options. Add product detail view with edit and delete functionality. Implement confirmation dialogs for destructive actions. Create reusable components for product cards and list items. Ensure responsive design for all screen sizes. Add loading states and error handling for API interactions."
+        },
+        {
+          "id": 4,
+          "title": "Implement drag-and-drop image upload functionality",
+          "description": "Create frontend components for image upload with drag-and-drop capability and S3 integration",
+          "status": "pending",
+          "dependencies": [
+            2,
+            3
+          ],
+          "details": "Develop drag-and-drop image upload component using React-Dropzone or similar library. Implement client-side image validation for file type and size. Create image preview functionality with ability to remove images before submission. Integrate with backend presigned URL flow: 1) Request URL from backend, 2) Upload directly to S3, 3) Save returned URL to product. Add progress indicators for uploads. Implement image reordering capability. Ensure limit of 3 images per product is enforced on frontend. Add error handling for failed uploads with user-friendly messages."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Implement Product Discovery and Search",
+      "description": "Build product browsing, search by keyword, and category filtering functionality.",
+      "status": "pending",
+      "dependencies": [
+        4
+      ],
+      "priority": "medium",
+      "details": "Create paginated product feed API with sorting options. Implement text search using MongoDB text indexes. Add category-based filtering. Build frontend components for product browsing with responsive grid layout. Implement search bar with debounced input. Create product detail page with image gallery. Ensure mobile-first responsive design as 60% of traffic is expected on phones. Implement dark mode support in the UI.",
+      "testStrategy": "Test search functionality with various keywords. Verify pagination works correctly. Test category filtering. Create end-to-end tests for browsing and searching products. Test responsive design on various screen sizes.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create paginated product feed API with MongoDB text indexes",
+          "description": "Implement backend API endpoints for retrieving paginated product data with sorting options and set up MongoDB text indexes for efficient search",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Create a RESTful API endpoint that returns paginated product data with configurable page size and page number. Implement sorting options (newest, price high-low, price low-high, popularity). Set up MongoDB text indexes on relevant product fields (name, description, tags) to support efficient text search. Include API parameters for limit, offset, sort field, and sort direction. Return appropriate metadata (total count, page info) for pagination controls."
+        },
+        {
+          "id": 2,
+          "title": "Implement search and category filtering functionality",
+          "description": "Extend the product API to support text search queries and category-based filtering",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Add text search capability to the product API using the MongoDB text indexes created earlier. Implement debouncing on the server side to prevent excessive database queries. Create category filtering logic that can be combined with text search. Support multiple category selection. Ensure search results maintain pagination and sorting capabilities. Add relevant API documentation for the new query parameters. Test search performance with various query patterns and optimize as needed."
+        },
+        {
+          "id": 3,
+          "title": "Build responsive product browsing UI components",
+          "description": "Create frontend components for browsing products with a responsive grid layout and search functionality",
+          "status": "pending",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Develop a responsive product grid component that adapts to different screen sizes (prioritize mobile-first design for 60% mobile traffic). Implement a search bar component with debounced input to prevent excessive API calls. Create category filter UI with checkboxes or dropdown menus. Build pagination controls that work well on mobile and desktop. Implement sorting controls that collapse into a dropdown on mobile. Ensure all components support dark mode through CSS variables or a theming system. Test the UI across various device sizes and orientations."
+        },
+        {
+          "id": 4,
+          "title": "Create product detail page with image gallery",
+          "description": "Implement a detailed product view page with an image gallery and responsive layout",
+          "status": "pending",
+          "dependencies": [
+            3
+          ],
+          "details": "Build a product detail page that displays comprehensive product information. Implement an image gallery with thumbnail navigation and lightbox functionality for enlarged views. Ensure the page layout is responsive and optimized for mobile devices. Add breadcrumb navigation showing product category hierarchy. Implement dark mode support for the detail page. Add related/similar products section at the bottom of the page. Optimize image loading with lazy loading techniques. Ensure all interactive elements have appropriate hover/focus states and are accessible."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Develop Cart and Checkout System",
+      "description": "Implement shopping cart functionality and single-seller COD checkout process.",
+      "status": "pending",
+      "dependencies": [
+        5
+      ],
+      "priority": "high",
+      "details": "Create cart data model with one active cart per Buyer. Implement cart API endpoints (add, remove, update quantity). Build checkout process for COD orders with single-seller restriction. Create transactional order document creation on checkout. Implement frontend cart components with quantity controls. Build checkout form with delivery details. Add order confirmation page. Ensure proper stock validation during checkout.",
+      "testStrategy": "Write unit and integration tests for cart and checkout endpoints. Test stock validation and cart operations. Create end-to-end tests for the complete checkout flow. Verify transactional integrity of order creation.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create Cart Data Model and API Endpoints",
+          "description": "Design and implement the cart data model and core API endpoints for cart management",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Create a cart schema with fields for buyer ID, items array (product ID, seller ID, quantity, price), cart total, and timestamps. Ensure one active cart per buyer. Implement RESTful API endpoints for: adding items to cart, removing items, updating quantities, and retrieving cart contents. Include validation to ensure products from multiple sellers cannot be added to the same cart."
+        },
+        {
+          "id": 2,
+          "title": "Implement Frontend Cart Components",
+          "description": "Build UI components for displaying and managing the shopping cart",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Create a cart page component with item listing, quantity controls (increment/decrement/remove), and cart summary. Implement cart icon with item count in the header. Add toast notifications for cart actions. Ensure responsive design for mobile and desktop. Include empty cart state handling. Implement client-side validation for the single-seller restriction with appropriate user feedback."
+        },
+        {
+          "id": 3,
+          "title": "Develop Checkout Form and Validation",
+          "description": "Create the checkout form with delivery details and implement validation logic",
+          "status": "pending",
+          "dependencies": [
+            2
+          ],
+          "details": "Build a multi-step checkout form with: delivery address collection (with address validation), delivery time selection, order summary review, and payment method selection (COD only for now). Implement form validation for all required fields. Add stock validation to ensure products are in stock before proceeding. Create loading states and error handling for API interactions. Ensure mobile-friendly design."
+        },
+        {
+          "id": 4,
+          "title": "Implement Order Creation and Checkout Process",
+          "description": "Create the backend checkout process with transactional order creation",
+          "status": "pending",
+          "dependencies": [
+            1,
+            3
+          ],
+          "details": "Implement a checkout API endpoint that: validates stock availability, creates an order document with delivery details and items, updates product inventory, and clears the cart in a transactional manner. Use database transactions to ensure data consistency. Generate order reference numbers. Implement proper error handling for failed checkouts. Add logging for debugging and monitoring."
+        },
+        {
+          "id": 5,
+          "title": "Build Order Confirmation and Status Tracking",
+          "description": "Create order confirmation page and basic order status tracking",
+          "status": "pending",
+          "dependencies": [
+            4
+          ],
+          "details": "Implement an order confirmation page showing order details, estimated delivery, and confirmation number. Create a simple order status tracking interface showing current status (processing, shipped, delivered). Add email notification functionality for order confirmation. Implement order history in the user account section. Add the ability to view order details from the history page."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Implement Order Management System",
+      "description": "Build order status flow and management for both Buyers and Sellers.",
+      "status": "pending",
+      "dependencies": [
+        6
+      ],
+      "priority": "high",
+      "details": "Implement order state machine with status flow: received → preparing → prepared → shipped → delivered → closed. Create API endpoints for Sellers to update order status. Implement order cancellation functionality for Buyers (only before 'prepared' status). Build Seller dashboard with order management UI. Create Buyer order history page with status tracking. Implement order details view for both Buyer and Seller. Add validation for state transitions.",
+      "testStrategy": "Test all order status transitions and validations. Verify cancellation rules. Create end-to-end tests for order management from both Buyer and Seller perspectives. Test edge cases like attempting invalid status changes.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement Order State Machine",
+          "description": "Create the core order state machine with defined transitions between statuses: received → preparing → prepared → shipped → delivered → closed",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Define an Order model with status field and timestamps for each status change. Implement state transition logic with validation rules to ensure only valid transitions are allowed. Create helper methods to check if specific transitions are permitted based on current status. Include validation to prevent invalid state transitions. Document the state machine logic for future reference."
+        },
+        {
+          "id": 2,
+          "title": "Build API Endpoints for Order Status Management",
+          "description": "Create API endpoints for Sellers to update order status and for Buyers to cancel orders",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Implement RESTful API endpoints for: 1) Sellers to update order status with proper authentication and authorization, 2) Buyers to cancel orders with validation to ensure cancellation is only allowed before 'prepared' status. Include appropriate error handling and response codes. Add request validation to ensure all required fields are present. Implement unit tests for each endpoint to verify business rules are enforced."
+        },
+        {
+          "id": 3,
+          "title": "Develop Seller Order Management Dashboard",
+          "description": "Create a dashboard UI for Sellers to view and manage orders with filtering and status update capabilities",
+          "status": "pending",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Build a responsive dashboard with order listing that includes filtering by status, date range, and search functionality. Implement a detailed order view with customer information, order items, and status history. Add status update controls that integrate with the API endpoints. Include confirmation dialogs for status changes. Implement real-time or polling updates to show new orders. Add pagination for order lists."
+        },
+        {
+          "id": 4,
+          "title": "Create Buyer Order History and Tracking UI",
+          "description": "Implement order history page and detailed order tracking view for Buyers",
+          "status": "pending",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Develop a Buyer-facing order history page showing past and current orders with status indicators. Create a detailed order tracking view that displays the full order status history with timestamps. Implement the order cancellation UI with appropriate warnings and confirmations. Add visual indicators for order progress through the status flow. Ensure the UI is responsive and works well on mobile devices."
+        },
+        {
+          "id": 5,
+          "title": "Implement Notifications and System Integration",
+          "description": "Add notifications for order status changes and integrate the order system with other components",
+          "status": "pending",
+          "dependencies": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "details": "Implement email and/or push notifications for both Buyers and Sellers when order status changes. Create notification preferences to allow users to customize which updates they receive. Integrate the order management system with inventory management to update stock levels when orders are placed or canceled. Connect with the payment processing system to handle refunds for canceled orders. Add logging for all status changes for audit purposes. Implement system-wide tests to verify the complete order lifecycle."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Develop Buyer-Seller Messaging System",
+      "description": "Implement 1-to-1 messaging between Buyers and Sellers for product inquiries.",
+      "status": "pending",
+      "dependencies": [
+        5
+      ],
+      "priority": "medium",
+      "details": "Create messages collection and API endpoints. Implement 1-to-1 thread per product. Set up 30-second polling mechanism for message updates. Build messaging UI components with conversation history. Add unread message indicators. Implement message input with validation. Create conversation list view for users to access all their conversations. Ensure proper user authorization for message access.",
+      "testStrategy": "Test message creation and retrieval. Verify polling mechanism works correctly. Create end-to-end tests for the complete messaging flow between Buyer and Seller. Test authorization rules to ensure users can only access their own conversations.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create Messages Data Model and API Endpoints",
+          "description": "Design and implement the database schema for messages and create the necessary API endpoints for message operations",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Create a 'messages' collection in the database with fields for sender_id, receiver_id, product_id, content, timestamp, read_status, and thread_id. Implement RESTful API endpoints for: creating messages (/api/messages), retrieving message threads (/api/messages/thread/:threadId), marking messages as read (/api/messages/:id/read), and getting unread message count (/api/messages/unread/count). Ensure proper validation for message content and authorization checks to verify users can only access their own messages. The thread_id should be generated as a combination of product_id and the two user IDs to ensure 1-to-1 thread per product."
+        },
+        {
+          "id": 2,
+          "title": "Implement Conversation List View",
+          "description": "Create a UI component that displays all conversations for a user with unread indicators",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Build a conversation list component that fetches and displays all message threads the current user is involved in. Each conversation item should show: the other user's name, product title with thumbnail, preview of the last message, timestamp of last message, and an unread message indicator (badge with count). Implement sorting by most recent message. Add a polling mechanism that checks for updates every 30 seconds. Ensure the component handles empty states and loading states appropriately. This view should be accessible from the user's dashboard/profile area."
+        },
+        {
+          "id": 3,
+          "title": "Develop Message Thread UI Component",
+          "description": "Create the UI for displaying the full conversation history between users about a specific product",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Build a message thread component that displays the full conversation history between two users about a specific product. Messages should be displayed in chronological order with clear visual distinction between sent and received messages. Include user avatars, timestamps, and read receipts. Implement automatic scrolling to the most recent message when opening a thread. Set up the 30-second polling mechanism to check for new messages. When new messages are received, they should be appended to the conversation and the view should scroll to show them. Ensure messages are marked as read when viewed by the recipient."
+        },
+        {
+          "id": 4,
+          "title": "Create Message Input Component with Send Functionality",
+          "description": "Implement the UI and functionality for composing and sending new messages",
+          "status": "pending",
+          "dependencies": [
+            1,
+            3
+          ],
+          "details": "Develop a message input component that allows users to type and send messages. Include validation to prevent empty messages and implement character limits (e.g., 500 characters). Add a send button that triggers the API call to create a new message. Implement optimistic UI updates that show the sent message immediately in the conversation before server confirmation. Handle error states appropriately, allowing users to retry failed message sends. Add basic text formatting if needed. Ensure the input component integrates seamlessly with the message thread UI component. Implement proper focus management so users can quickly start typing when opening a conversation."
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Implement Ratings and Reviews System",
+      "description": "Build functionality for Buyers to rate and review products after delivery.",
+      "status": "pending",
+      "dependencies": [
+        7
+      ],
+      "priority": "medium",
+      "details": "Create reviews collection and API endpoints. Implement 1-5 star rating system with comments. Allow one review per order. Calculate and update product average rating. Build review submission UI for Buyers post-delivery. Create review display components for product pages. Implement review moderation capabilities for future admin use. Add validation to ensure reviews can only be submitted after order delivery.",
+      "testStrategy": "Test review creation and validation rules. Verify average rating calculation. Create end-to-end tests for submitting and displaying reviews. Test that reviews can only be submitted for delivered orders.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Create Reviews Data Model and API Endpoints",
+          "description": "Design and implement the database schema for reviews and create the necessary API endpoints for CRUD operations",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Create a 'reviews' collection with fields for: reviewId, productId, orderId, userId, rating (1-5), comment, timestamp, and status (pending/approved/rejected). Implement API endpoints for: POST /reviews (create), GET /reviews/:id (single review), GET /products/:id/reviews (all reviews for product), PUT /reviews/:id (update), DELETE /reviews/:id (delete). Include validation to ensure a user can only review products they've purchased and received."
+        },
+        {
+          "id": 2,
+          "title": "Implement Rating Calculation Logic and Validation Rules",
+          "description": "Build the business logic for calculating average product ratings and implement validation rules for review submission",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Create a function to calculate and update product average ratings whenever a review is added, updated, or deleted. Implement validation logic to ensure: 1) Users can only review products from orders marked as 'delivered', 2) One review per order item is allowed, 3) Rating must be between 1-5 stars, 4) Comments must meet length requirements. Add a trigger to update product documents with new average rating and review count whenever reviews change."
+        },
+        {
+          "id": 3,
+          "title": "Build Review Submission UI for Buyers",
+          "description": "Create the user interface components for buyers to submit reviews after product delivery",
+          "status": "pending",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Develop a review submission form with: 1) Star rating selector (1-5 stars), 2) Text area for comments, 3) Submit button. Implement this form on the order history page, showing a 'Leave Review' button only for delivered items that haven't been reviewed yet. Include client-side validation for required fields and rating selection. Add confirmation dialog after submission and success/error notifications."
+        },
+        {
+          "id": 4,
+          "title": "Implement Review Display and Moderation Features",
+          "description": "Create components to display reviews on product pages and add moderation capabilities for administrators",
+          "status": "pending",
+          "dependencies": [
+            1,
+            2,
+            3
+          ],
+          "details": "Build a reviews section for product pages showing: average rating, total review count, and individual reviews sorted by date. Include pagination if reviews exceed a certain number. Create filtering options to sort by rating or date. For admin functionality, implement a review moderation dashboard with options to approve, reject, or delete reviews. Add a flag system for users to report inappropriate reviews. Ensure reviews are only displayed publicly after approval."
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Develop In-App Notifications and Seller Analytics",
+      "description": "Implement notification system for order events and messages, plus basic analytics for Sellers.",
+      "status": "pending",
+      "dependencies": [
+        7,
+        8,
+        9
+      ],
+      "priority": "low",
+      "details": "Create lightweight WebSocket or SSE channel for real-time notifications. Implement notification center UI with read/unread status. Build notification triggers for order status changes and new messages. Create Seller analytics dashboard with sales totals and top products. Implement MongoDB aggregation pipeline for order data analysis. Add notification preferences settings. Ensure mobile-friendly notification display.",
+      "testStrategy": "Test notification delivery for various events. Verify analytics calculations match expected results. Create end-to-end tests for notification flow from trigger to display. Test analytics dashboard with various data scenarios.",
+      "subtasks": [
+        {
+          "id": 1,
+          "title": "Implement WebSocket/SSE notification channel",
+          "description": "Set up the server-side infrastructure for real-time notifications using WebSocket or Server-Sent Events",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Create a WebSocket server or SSE endpoint that can push notifications to connected clients. Implement connection management, authentication for secure connections, and basic message formatting. Set up event listeners on the server for notification triggers (order status changes, new messages). Test the connection with simple notification payloads to ensure reliability."
+        },
+        {
+          "id": 2,
+          "title": "Build notification center UI with read/unread status",
+          "description": "Develop the frontend UI components for displaying notifications and tracking read status",
+          "status": "pending",
+          "dependencies": [
+            1
+          ],
+          "details": "Create a notification center component that connects to the WebSocket/SSE channel. Implement UI for displaying notification items with timestamps, read/unread indicators, and notification types. Add a notification counter badge. Store notification read status in the database. Ensure the UI is responsive and works well on mobile devices. Include animations for new notifications and implement notification grouping for better organization."
+        },
+        {
+          "id": 3,
+          "title": "Implement notification triggers and preferences",
+          "description": "Create backend logic for generating notifications based on system events and user preference settings",
+          "status": "pending",
+          "dependencies": [
+            1,
+            2
+          ],
+          "details": "Implement event listeners for order status changes, new messages, and other relevant events. Create notification templates for different event types. Build a notification preferences page allowing sellers to choose which notifications they receive. Store preferences in the database and respect them when sending notifications. Implement notification throttling to prevent overwhelming users with too many notifications."
+        },
+        {
+          "id": 4,
+          "title": "Create MongoDB aggregation pipeline for seller data analysis",
+          "description": "Develop backend services to analyze order and product data for seller analytics",
+          "status": "pending",
+          "dependencies": [],
+          "details": "Design and implement MongoDB aggregation pipelines to calculate key metrics: total sales, sales by time period, top-selling products, average order value, and customer retention. Create API endpoints to retrieve these analytics. Implement caching for performance optimization. Add data validation and error handling. Document the aggregation pipelines for future maintenance."
+        },
+        {
+          "id": 5,
+          "title": "Build seller analytics dashboard UI",
+          "description": "Develop the frontend UI for displaying seller analytics with charts and data visualizations",
+          "status": "pending",
+          "dependencies": [
+            4
+          ],
+          "details": "Create a responsive analytics dashboard with charts and graphs using a visualization library like Chart.js or D3.js. Implement components for displaying sales totals, top products, and trend analysis. Add date range filters for customizing the data view. Ensure all visualizations are mobile-friendly with appropriate layouts for different screen sizes. Include export functionality for analytics data. Add loading states and error handling for data fetching."
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "projectName": "Vecino Marketplace MVP",
+    "totalTasks": 10,
+    "sourceFile": "prd/vecino_marketplace_mvp.md",
+    "generatedAt": "2023-11-10"
+  }
+}

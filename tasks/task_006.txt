@@ -1,0 +1,43 @@
+# Task ID: 6
+# Title: Develop Cart and Checkout System
+# Status: pending
+# Dependencies: 5
+# Priority: high
+# Description: Implement shopping cart functionality and single-seller COD checkout process.
+# Details:
+Create cart data model with one active cart per Buyer. Implement cart API endpoints (add, remove, update quantity). Build checkout process for COD orders with single-seller restriction. Create transactional order document creation on checkout. Implement frontend cart components with quantity controls. Build checkout form with delivery details. Add order confirmation page. Ensure proper stock validation during checkout.
+
+# Test Strategy:
+Write unit and integration tests for cart and checkout endpoints. Test stock validation and cart operations. Create end-to-end tests for the complete checkout flow. Verify transactional integrity of order creation.
+
+# Subtasks:
+## 1. Create Cart Data Model and API Endpoints [pending]
+### Dependencies: None
+### Description: Design and implement the cart data model and core API endpoints for cart management
+### Details:
+Create a cart schema with fields for buyer ID, items array (product ID, seller ID, quantity, price), cart total, and timestamps. Ensure one active cart per buyer. Implement RESTful API endpoints for: adding items to cart, removing items, updating quantities, and retrieving cart contents. Include validation to ensure products from multiple sellers cannot be added to the same cart.
+
+## 2. Implement Frontend Cart Components [pending]
+### Dependencies: 6.1
+### Description: Build UI components for displaying and managing the shopping cart
+### Details:
+Create a cart page component with item listing, quantity controls (increment/decrement/remove), and cart summary. Implement cart icon with item count in the header. Add toast notifications for cart actions. Ensure responsive design for mobile and desktop. Include empty cart state handling. Implement client-side validation for the single-seller restriction with appropriate user feedback.
+
+## 3. Develop Checkout Form and Validation [pending]
+### Dependencies: 6.2
+### Description: Create the checkout form with delivery details and implement validation logic
+### Details:
+Build a multi-step checkout form with: delivery address collection (with address validation), delivery time selection, order summary review, and payment method selection (COD only for now). Implement form validation for all required fields. Add stock validation to ensure products are in stock before proceeding. Create loading states and error handling for API interactions. Ensure mobile-friendly design.
+
+## 4. Implement Order Creation and Checkout Process [pending]
+### Dependencies: 6.1, 6.3
+### Description: Create the backend checkout process with transactional order creation
+### Details:
+Implement a checkout API endpoint that: validates stock availability, creates an order document with delivery details and items, updates product inventory, and clears the cart in a transactional manner. Use database transactions to ensure data consistency. Generate order reference numbers. Implement proper error handling for failed checkouts. Add logging for debugging and monitoring.
+
+## 5. Build Order Confirmation and Status Tracking [pending]
+### Dependencies: 6.4
+### Description: Create order confirmation page and basic order status tracking
+### Details:
+Implement an order confirmation page showing order details, estimated delivery, and confirmation number. Create a simple order status tracking interface showing current status (processing, shipped, delivered). Add email notification functionality for order confirmation. Implement order history in the user account section. Add the ability to view order details from the history page.
+

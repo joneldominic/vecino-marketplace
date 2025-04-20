@@ -1,0 +1,43 @@
+# Task ID: 7
+# Title: Implement Order Management System
+# Status: pending
+# Dependencies: 6
+# Priority: high
+# Description: Build order status flow and management for both Buyers and Sellers.
+# Details:
+Implement order state machine with status flow: received → preparing → prepared → shipped → delivered → closed. Create API endpoints for Sellers to update order status. Implement order cancellation functionality for Buyers (only before 'prepared' status). Build Seller dashboard with order management UI. Create Buyer order history page with status tracking. Implement order details view for both Buyer and Seller. Add validation for state transitions.
+
+# Test Strategy:
+Test all order status transitions and validations. Verify cancellation rules. Create end-to-end tests for order management from both Buyer and Seller perspectives. Test edge cases like attempting invalid status changes.
+
+# Subtasks:
+## 1. Implement Order State Machine [pending]
+### Dependencies: None
+### Description: Create the core order state machine with defined transitions between statuses: received → preparing → prepared → shipped → delivered → closed
+### Details:
+Define an Order model with status field and timestamps for each status change. Implement state transition logic with validation rules to ensure only valid transitions are allowed. Create helper methods to check if specific transitions are permitted based on current status. Include validation to prevent invalid state transitions. Document the state machine logic for future reference.
+
+## 2. Build API Endpoints for Order Status Management [pending]
+### Dependencies: 7.1
+### Description: Create API endpoints for Sellers to update order status and for Buyers to cancel orders
+### Details:
+Implement RESTful API endpoints for: 1) Sellers to update order status with proper authentication and authorization, 2) Buyers to cancel orders with validation to ensure cancellation is only allowed before 'prepared' status. Include appropriate error handling and response codes. Add request validation to ensure all required fields are present. Implement unit tests for each endpoint to verify business rules are enforced.
+
+## 3. Develop Seller Order Management Dashboard [pending]
+### Dependencies: 7.1, 7.2
+### Description: Create a dashboard UI for Sellers to view and manage orders with filtering and status update capabilities
+### Details:
+Build a responsive dashboard with order listing that includes filtering by status, date range, and search functionality. Implement a detailed order view with customer information, order items, and status history. Add status update controls that integrate with the API endpoints. Include confirmation dialogs for status changes. Implement real-time or polling updates to show new orders. Add pagination for order lists.
+
+## 4. Create Buyer Order History and Tracking UI [pending]
+### Dependencies: 7.1, 7.2
+### Description: Implement order history page and detailed order tracking view for Buyers
+### Details:
+Develop a Buyer-facing order history page showing past and current orders with status indicators. Create a detailed order tracking view that displays the full order status history with timestamps. Implement the order cancellation UI with appropriate warnings and confirmations. Add visual indicators for order progress through the status flow. Ensure the UI is responsive and works well on mobile devices.
+
+## 5. Implement Notifications and System Integration [pending]
+### Dependencies: 7.1, 7.2, 7.3, 7.4
+### Description: Add notifications for order status changes and integrate the order system with other components
+### Details:
+Implement email and/or push notifications for both Buyers and Sellers when order status changes. Create notification preferences to allow users to customize which updates they receive. Integrate the order management system with inventory management to update stock levels when orders are placed or canceled. Connect with the payment processing system to handle refunds for canceled orders. Add logging for all status changes for audit purposes. Implement system-wide tests to verify the complete order lifecycle.
+

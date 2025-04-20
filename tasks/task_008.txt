@@ -1,0 +1,37 @@
+# Task ID: 8
+# Title: Develop Buyer-Seller Messaging System
+# Status: pending
+# Dependencies: 5
+# Priority: medium
+# Description: Implement 1-to-1 messaging between Buyers and Sellers for product inquiries.
+# Details:
+Create messages collection and API endpoints. Implement 1-to-1 thread per product. Set up 30-second polling mechanism for message updates. Build messaging UI components with conversation history. Add unread message indicators. Implement message input with validation. Create conversation list view for users to access all their conversations. Ensure proper user authorization for message access.
+
+# Test Strategy:
+Test message creation and retrieval. Verify polling mechanism works correctly. Create end-to-end tests for the complete messaging flow between Buyer and Seller. Test authorization rules to ensure users can only access their own conversations.
+
+# Subtasks:
+## 1. Create Messages Data Model and API Endpoints [pending]
+### Dependencies: None
+### Description: Design and implement the database schema for messages and create the necessary API endpoints for message operations
+### Details:
+Create a 'messages' collection in the database with fields for sender_id, receiver_id, product_id, content, timestamp, read_status, and thread_id. Implement RESTful API endpoints for: creating messages (/api/messages), retrieving message threads (/api/messages/thread/:threadId), marking messages as read (/api/messages/:id/read), and getting unread message count (/api/messages/unread/count). Ensure proper validation for message content and authorization checks to verify users can only access their own messages. The thread_id should be generated as a combination of product_id and the two user IDs to ensure 1-to-1 thread per product.
+
+## 2. Implement Conversation List View [pending]
+### Dependencies: 8.1
+### Description: Create a UI component that displays all conversations for a user with unread indicators
+### Details:
+Build a conversation list component that fetches and displays all message threads the current user is involved in. Each conversation item should show: the other user's name, product title with thumbnail, preview of the last message, timestamp of last message, and an unread message indicator (badge with count). Implement sorting by most recent message. Add a polling mechanism that checks for updates every 30 seconds. Ensure the component handles empty states and loading states appropriately. This view should be accessible from the user's dashboard/profile area.
+
+## 3. Develop Message Thread UI Component [pending]
+### Dependencies: 8.1
+### Description: Create the UI for displaying the full conversation history between users about a specific product
+### Details:
+Build a message thread component that displays the full conversation history between two users about a specific product. Messages should be displayed in chronological order with clear visual distinction between sent and received messages. Include user avatars, timestamps, and read receipts. Implement automatic scrolling to the most recent message when opening a thread. Set up the 30-second polling mechanism to check for new messages. When new messages are received, they should be appended to the conversation and the view should scroll to show them. Ensure messages are marked as read when viewed by the recipient.
+
+## 4. Create Message Input Component with Send Functionality [pending]
+### Dependencies: 8.1, 8.3
+### Description: Implement the UI and functionality for composing and sending new messages
+### Details:
+Develop a message input component that allows users to type and send messages. Include validation to prevent empty messages and implement character limits (e.g., 500 characters). Add a send button that triggers the API call to create a new message. Implement optimistic UI updates that show the sent message immediately in the conversation before server confirmation. Handle error states appropriately, allowing users to retry failed message sends. Add basic text formatting if needed. Ensure the input component integrates seamlessly with the message thread UI component. Implement proper focus management so users can quickly start typing when opening a conversation.
+

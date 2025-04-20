@@ -1,0 +1,37 @@
+# Task ID: 9
+# Title: Implement Ratings and Reviews System
+# Status: pending
+# Dependencies: 7
+# Priority: medium
+# Description: Build functionality for Buyers to rate and review products after delivery.
+# Details:
+Create reviews collection and API endpoints. Implement 1-5 star rating system with comments. Allow one review per order. Calculate and update product average rating. Build review submission UI for Buyers post-delivery. Create review display components for product pages. Implement review moderation capabilities for future admin use. Add validation to ensure reviews can only be submitted after order delivery.
+
+# Test Strategy:
+Test review creation and validation rules. Verify average rating calculation. Create end-to-end tests for submitting and displaying reviews. Test that reviews can only be submitted for delivered orders.
+
+# Subtasks:
+## 1. Create Reviews Data Model and API Endpoints [pending]
+### Dependencies: None
+### Description: Design and implement the database schema for reviews and create the necessary API endpoints for CRUD operations
+### Details:
+Create a 'reviews' collection with fields for: reviewId, productId, orderId, userId, rating (1-5), comment, timestamp, and status (pending/approved/rejected). Implement API endpoints for: POST /reviews (create), GET /reviews/:id (single review), GET /products/:id/reviews (all reviews for product), PUT /reviews/:id (update), DELETE /reviews/:id (delete). Include validation to ensure a user can only review products they've purchased and received.
+
+## 2. Implement Rating Calculation Logic and Validation Rules [pending]
+### Dependencies: 9.1
+### Description: Build the business logic for calculating average product ratings and implement validation rules for review submission
+### Details:
+Create a function to calculate and update product average ratings whenever a review is added, updated, or deleted. Implement validation logic to ensure: 1) Users can only review products from orders marked as 'delivered', 2) One review per order item is allowed, 3) Rating must be between 1-5 stars, 4) Comments must meet length requirements. Add a trigger to update product documents with new average rating and review count whenever reviews change.
+
+## 3. Build Review Submission UI for Buyers [pending]
+### Dependencies: 9.1, 9.2
+### Description: Create the user interface components for buyers to submit reviews after product delivery
+### Details:
+Develop a review submission form with: 1) Star rating selector (1-5 stars), 2) Text area for comments, 3) Submit button. Implement this form on the order history page, showing a 'Leave Review' button only for delivered items that haven't been reviewed yet. Include client-side validation for required fields and rating selection. Add confirmation dialog after submission and success/error notifications.
+
+## 4. Implement Review Display and Moderation Features [pending]
+### Dependencies: 9.1, 9.2, 9.3
+### Description: Create components to display reviews on product pages and add moderation capabilities for administrators
+### Details:
+Build a reviews section for product pages showing: average rating, total review count, and individual reviews sorted by date. Include pagination if reviews exceed a certain number. Create filtering options to sort by rating or date. For admin functionality, implement a review moderation dashboard with options to approve, reject, or delete reviews. Add a flag system for users to report inappropriate reviews. Ensure reviews are only displayed publicly after approval.
+

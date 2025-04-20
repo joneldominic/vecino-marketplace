@@ -1,0 +1,43 @@
+# Task ID: 3
+# Title: Implement Authentication and User Management
+# Status: pending
+# Dependencies: 2
+# Priority: high
+# Description: Build user registration, login, and session management for both Buyers and Sellers.
+# Details:
+Implement email/password registration and login endpoints with bcrypt password hashing. Create JWT-based authentication middleware. Set up Redis for session storage. Implement user profile management. Add CAPTCHA for registration and rate limiting for auth APIs to prevent spam. Create frontend components for login, registration, and profile pages with form validation. Implement protected routes in the frontend.
+
+# Test Strategy:
+Write unit and integration tests for auth endpoints. Test password hashing, JWT validation, and session management. Create end-to-end tests for registration and login flows. Verify rate limiting and CAPTCHA functionality.
+
+# Subtasks:
+## 1. Implement Backend Authentication Core [pending]
+### Dependencies: None
+### Description: Create the core authentication endpoints and password handling for user registration and login
+### Details:
+Create Express routes for /auth/register and /auth/login. Implement bcrypt for password hashing and verification. Set up user schema with proper validation for email and password strength. Create database models for both Buyer and Seller user types with appropriate fields. Implement basic input validation middleware. Return appropriate HTTP status codes and error messages for different authentication scenarios.
+
+## 2. Implement JWT Authentication and Middleware [pending]
+### Dependencies: 3.1
+### Description: Create JWT token generation, validation, and authentication middleware
+### Details:
+Set up JWT signing with appropriate secret key and expiration time. Create middleware to verify JWT tokens from Authorization header. Implement token refresh mechanism. Add user role verification (Buyer vs Seller) in the middleware. Create protected route wrappers that can be applied to endpoints requiring authentication. Implement proper error handling for token validation failures. Store JWT secret in environment variables.
+
+## 3. Set Up Session Management with Redis [pending]
+### Dependencies: 3.2
+### Description: Implement Redis-based session storage and management
+### Details:
+Set up Redis connection with appropriate configuration. Create session storage and retrieval functions. Implement session invalidation for logouts. Add session lookup to the authentication middleware. Create mechanisms to force logout across all devices if needed. Implement session expiration and cleanup. Add rate limiting for authentication attempts using Redis counters. Configure proper Redis persistence settings.
+
+## 4. Implement User Profile Management and Security Features [pending]
+### Dependencies: 3.2, 3.3
+### Description: Create user profile CRUD operations and add security features
+### Details:
+Create endpoints for viewing and updating user profiles. Implement CAPTCHA verification for registration using a service like reCAPTCHA. Add rate limiting middleware for auth APIs to prevent brute force attacks. Implement email verification flow. Add password reset functionality with secure tokens. Create account deletion and deactivation features. Implement proper logging for security-relevant events.
+
+## 5. Create Frontend Authentication Components [pending]
+### Dependencies: 3.4
+### Description: Build frontend components for authentication and user management
+### Details:
+Create React components for login and registration forms with client-side validation. Implement protected route components that redirect unauthenticated users. Build user profile edit page with form validation. Create authentication context/provider to manage auth state across the application. Implement token storage in localStorage or cookies with proper security considerations. Add CAPTCHA components to registration form. Create loading states and error handling for auth operations. Implement automatic token refresh mechanism in the frontend.
+
