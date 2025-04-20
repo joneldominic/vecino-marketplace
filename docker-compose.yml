@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # MongoDB database
+  mongodb:
+    image: mongo:6.0
+    container_name: vecino-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=vecino-marketplace
+    networks:
+      - vecino-network
+
+  # Redis for caching
+  redis:
+    image: redis:7.0-alpine
+    container_name: vecino-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - vecino-network
+
+  # Backend service (for local development, this would typically run locally)
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: backend/Dockerfile.dev
+  #   container_name: vecino-backend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "4000:4000"
+  #   volumes:
+  #     - ./backend:/app/backend
+  #     - ./shared:/app/shared
+  #     - /app/backend/node_modules
+  #   depends_on:
+  #     - mongodb
+  #     - redis
+  #   env_file: .env
+  #   networks:
+  #     - vecino-network
+
+  # Frontend service (for local development, this would typically run locally)
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: frontend/Dockerfile.dev
+  #   container_name: vecino-frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./frontend:/app/frontend
+  #     - ./shared:/app/shared
+  #     - /app/frontend/node_modules
+  #   env_file: .env
+  #   networks:
+  #     - vecino-network
+
+networks:
+  vecino-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  redis_data: 

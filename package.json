@@ -4,11 +4,23 @@
   "description": "A local marketplace for AMOA vecino to explore AI-driven development",
   "author": "Jonel Dominic Tapang",
   "type": "module",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ],
   "scripts": {
     "dev": "node scripts/dev.js",
     "list": "node scripts/dev.js list",
     "generate": "node scripts/dev.js generate",
-    "parse-prd": "node scripts/dev.js parse-prd"
+    "parse-prd": "node scripts/dev.js parse-prd",
+    "start:frontend": "npm run dev --workspace=frontend",
+    "start:backend": "npm run dev --workspace=backend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "build:backend": "npm run build --workspace=backend",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

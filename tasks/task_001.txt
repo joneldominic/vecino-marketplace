@@ -11,7 +11,7 @@ Create a monorepo structure with separate folders for frontend and backend. Fron
 Verify CI pipeline runs successfully with passing linting and tests. Ensure Docker containers build and run locally. Test deployment scripts with a staging environment.
 
 # Subtasks:
-## 1. Initialize Monorepo Structure [pending]
+## 1. Initialize Monorepo Structure [done]
 ### Dependencies: None
 ### Description: Create the base monorepo structure with separate directories for frontend and backend, and set up shared configuration files.
 ### Details:

@@ -1,0 +1,24 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package.json files
+COPY package*.json ./
+COPY frontend/package*.json ./frontend/
+COPY shared/package*.json ./shared/
+
+# Install dependencies
+RUN npm install
+RUN npm run --workspace=shared build
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Set working directory to frontend
+WORKDIR /app/frontend
+
+# Start development server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"] 
