@@ -1,7 +1,14 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import withAuth from './withAuth';
+import { useAuthStore } from '../store';
+
+// Explicitly mock the store module
+vi.mock('../store', () => ({
+  useAuthStore: vi.fn(),
+}));
 
 // Mock component to wrap with withAuth
 const TestComponent = () => <div>Protected Content</div>;
@@ -26,77 +33,72 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 describe('withAuth HOC', () => {
   beforeEach(() => {
     localStorageMock.clear();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it('should render the wrapped component when user is authenticated', async () => {
+  it('should render the wrapped component when user is authenticated', () => {
     // Set authentication token
     localStorageMock.setItem('token', 'valid-token');
 
+    // Mock the auth store to return authenticated state
+    vi.mocked(useAuthStore).mockReturnValue({
+      isAuthenticated: true,
+      login: vi.fn(),
+      logout: vi.fn(),
+      user: null,
+    });
+
     render(
       <MemoryRouter initialEntries={['/protected']}>
-        <Routes>
-          <Route path="/protected" element={<ProtectedComponent />} />
-          <Route path="/login" element={<div>Login Page</div>} />
-        </Routes>
+        <ProtectedComponent />
       </MemoryRouter>,
     );
 
     // Check that the protected content is rendered
-    await waitFor(() => {
-      expect(screen.getByText('Protected Content')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Protected Content')).toBeInTheDocument();
   });
 
-  it('should redirect to login page when user is not authenticated', async () => {
+  it('should redirect to login page when user is not authenticated', () => {
     // Ensure no authentication token
     localStorageMock.clear();
 
-    // Mock navigate function
-    const mockNavigate = jest.fn();
-    jest.mock('react-router-dom', () => ({
-      ...jest.requireActual('react-router-dom'),
-      useNavigate: () => mockNavigate,
-    }));
+    // Mock the auth store to return unauthenticated state
+    vi.mocked(useAuthStore).mockReturnValue({
+      isAuthenticated: false,
+      login: vi.fn(),
+      logout: vi.fn(),
+      user: null,
+    });
 
     render(
       <MemoryRouter initialEntries={['/protected']}>
-        <Routes>
-          <Route path="/protected" element={<ProtectedComponent />} />
-          <Route path="/login" element={<div>Login Page</div>} />
-        </Routes>
+        <ProtectedComponent />
       </MemoryRouter>,
     );
 
-    // The component should redirect to login page
-    await waitFor(() => {
-      expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
-      expect(screen.getByText('Login Page')).toBeInTheDocument();
-    });
+    // The component should show login message
+    expect(screen.getByText('Please log in to view this content.')).toBeInTheDocument();
   });
 
-  it('should handle token expiration', async () => {
-    // Set an expired token (assuming expiration is checked)
+  it('should handle token expiration', () => {
+    // Set an expired token
     localStorageMock.setItem('token', 'expired-token');
 
-    // Mock token validation to simulate expired token
-    jest.mock('./authService', () => ({
-      validateToken: () => false,
-    }));
+    // Mock the auth store to return unauthenticated state (token expired)
+    vi.mocked(useAuthStore).mockReturnValue({
+      isAuthenticated: false,
+      login: vi.fn(),
+      logout: vi.fn(),
+      user: null,
+    });
 
     render(
       <MemoryRouter initialEntries={['/protected']}>
-        <Routes>
-          <Route path="/protected" element={<ProtectedComponent />} />
-          <Route path="/login" element={<div>Login Page</div>} />
-        </Routes>
+        <ProtectedComponent />
       </MemoryRouter>,
     );
 
-    // The component should redirect to login page
-    await waitFor(() => {
-      expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
-      expect(screen.getByText('Login Page')).toBeInTheDocument();
-    });
+    // The component should show login message
+    expect(screen.getByText('Please log in to view this content.')).toBeInTheDocument();
   });
 });

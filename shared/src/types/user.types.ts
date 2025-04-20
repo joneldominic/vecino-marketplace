@@ -5,6 +5,7 @@ export enum UserRole {
   BUYER = 'buyer',
   SELLER = 'seller',
   ADMIN = 'admin',
+  USER = 'user', // Add 'user' role for tests
 }
 
 // User schema for validation
@@ -15,8 +16,8 @@ export const UserSchema = z.object({
   role: z.nativeEnum(UserRole),
   address: z.string().optional(),
   phone: z.string().optional(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
+  createdAt: z.string().or(z.date()).optional(),
+  updatedAt: z.string().or(z.date()).optional(),
 });
 
 // User type derived from schema

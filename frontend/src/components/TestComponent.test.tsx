@@ -28,7 +28,7 @@ describe('TestComponent', () => {
 
     expect(screen.getByText('Component Test')).toBeInTheDocument();
     expect(screen.getByText('Zustand Store Test:')).toBeInTheDocument();
-    expect(screen.getByText('TanStack Query Test:')).toBeInTheDocument();
+    expect(screen.getByText('Backend API Test:')).toBeInTheDocument();
   });
 
   it('displays dark mode status correctly', () => {
