@@ -4,7 +4,7 @@
       "id": 1,
       "title": "Setup Project Repository and Infrastructure",
       "description": "Initialize the project repository with React+Vite frontend and NestJS backend, configure CI/CD pipeline, and set up Docker files.",
-      "status": "pending",
+      "status": "done",
       "dependencies": [],
       "priority": "high",
       "details": "Create a monorepo structure with separate folders for frontend and backend. Frontend: Initialize with Vite, React, Zustand, and TanStack Query. Backend: Set up NestJS with MongoDB and Redis connections. Configure ESLint, Prettier, and Jest. Create Docker files for local development and production. Set up GitHub Actions for CI/CD pipeline with linting and testing. Configure AWS Elastic Beanstalk, S3, and CloudFront deployment scripts.",
@@ -61,7 +61,7 @@
           "description": "Configure GitHub Actions for CI/CD pipeline and set up deployment scripts for AWS services including Elastic Beanstalk, S3, and CloudFront.",
           "dependencies": [4, 5],
           "details": "1. Create GitHub Actions workflow files:\n   - Lint and test workflow for pull requests\n   - Build and deploy workflow for main branch\n2. Set up AWS deployment configuration:\n   - Configure Elastic Beanstalk for backend deployment\n   - Set up S3 bucket for frontend static files\n   - Configure CloudFront distribution for frontend CDN\n3. Create deployment scripts:\n   - Backend deployment to Elastic Beanstalk\n   - Frontend build and upload to S3\n   - CloudFront cache invalidation\n4. Set up GitHub repository secrets for AWS credentials\n5. Create infrastructure as code using AWS CDK or Terraform (optional)\n6. Test the CI/CD pipeline by making a small change, pushing to GitHub, and verifying the automated deployment",
-          "status": "pending",
+          "status": "done",
           "parentTaskId": 1
         }
       ]

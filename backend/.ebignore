@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Source code (we'll deploy the built version)
+src/
+
+# Test files
+**/*.spec.ts
+**/*.test.ts
+jest.config.js
+coverage/
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-*
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# EB configuration (will be provided by deployment pipeline)
+.elasticbeanstalk/tmp/
+
+# Other
+README.md
+CHANGELOG.md
+docs/
+*.log 

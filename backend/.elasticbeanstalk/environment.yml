@@ -1,0 +1,38 @@
+EnvironmentConfigurationMetadata:
+  Description: Configuration settings for vecino-marketplace-production environment
+  DateCreated: '2025-04-20'
+  DateModified: '2025-04-20'
+
+Platform:
+  PlatformArn: arn:aws:elasticbeanstalk:us-east-1::platform/Node.js 18 running on 64bit Amazon Linux 2/5.8.0
+
+OptionSettings:
+  # AWS service settings
+  aws:elasticbeanstalk:environment:
+    EnvironmentType: LoadBalanced
+    ServiceRole: aws-elasticbeanstalk-service-role
+
+  # Auto Scaling
+  aws:autoscaling:asg:
+    MinSize: '1'
+    MaxSize: '3'
+
+  aws:elasticbeanstalk:environment:proxy:
+    ProxyServer: nginx
+
+  # Application environment variables
+  aws:elasticbeanstalk:application:environment:
+    NODE_ENV: production
+    MONGODB_URI: your-mongodb-uri-here
+    REDIS_URL: your-redis-url-here
+
+  # Load Balancer
+  aws:elasticbeanstalk:environment:process:default:
+    Port: '4000'
+    Protocol: HTTP
+
+  # Logs
+  aws:elasticbeanstalk:cloudwatch:logs:
+    StreamLogs: true
+    DeleteOnTerminate: false
+    RetentionInDays: 7

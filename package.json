@@ -11,14 +11,16 @@
     "shared"
   ],
   "scripts": {
-    "dev": "node scripts/dev.js",
-    "list": "node scripts/dev.js list",
-    "generate": "node scripts/dev.js generate",
-    "parse-prd": "node scripts/dev.js parse-prd",
+    "dev": "node scripts/dev.cjs",
+    "list": "node scripts/dev.cjs list",
+    "generate": "node scripts/dev.cjs generate",
+    "parse-prd": "node scripts/dev.cjs parse-prd",
     "start:frontend": "npm run dev --workspace=frontend",
     "start:backend": "npm run dev --workspace=backend",
     "build:frontend": "npm run build --workspace=frontend",
     "build:backend": "npm run build --workspace=backend",
+    "build:shared": "npm run build --workspace=shared",
+    "build:all": "npm run build:shared && npm run build:frontend && npm run build:backend",
     "lint": "npm run lint --workspaces",
     "lint:fix": "npm run lint --workspaces -- --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
@@ -31,7 +33,11 @@
     "docker:prod": "docker-compose -f docker-compose.prod.yml up",
     "docker:prod:build": "docker-compose -f docker-compose.prod.yml up --build",
     "docker:prod:down": "docker-compose -f docker-compose.prod.yml down",
-    "docker:db": "docker-compose -f docker-compose.dev.yml up mongodb redis"
+    "docker:db": "docker-compose -f docker-compose.dev.yml up mongodb redis",
+    "deploy:frontend": "aws s3 sync frontend/dist/ s3://$S3_BUCKET_NAME --delete && aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths \"/*\"",
+    "deploy:backend": "cd backend && eb deploy",
+    "deploy": "npm run build:all && npm run deploy:frontend && npm run deploy:backend",
+    "init:aws": "cd infrastructure/cdk && npm run bootstrap && npm run deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

@@ -1,6 +1,6 @@
 # Task ID: 1
 # Title: Setup Project Repository and Infrastructure
-# Status: pending
+# Status: done
 # Dependencies: None
 # Priority: high
 # Description: Initialize the project repository with React+Vite frontend and NestJS backend, configure CI/CD pipeline, and set up Docker files.
@@ -93,7 +93,7 @@ Verify CI pipeline runs successfully with passing linting and tests. Ensure Dock
 5. Add npm scripts for Docker operations
 6. Test by building and running containers locally, ensuring both frontend and backend services are accessible
 
-## 6. Set Up CI/CD Pipeline with AWS Deployment [pending]
+## 6. Set Up CI/CD Pipeline with AWS Deployment [done]
 ### Dependencies: 1.4, 1.5
 ### Description: Configure GitHub Actions for CI/CD pipeline and set up deployment scripts for AWS services including Elastic Beanstalk, S3, and CloudFront.
 ### Details:

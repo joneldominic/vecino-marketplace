@@ -1,0 +1,21 @@
+{
+  "name": "vecino-marketplace-cdk",
+  "version": "0.1.0",
+  "description": "AWS CDK infrastructure for Vecino Marketplace",
+  "private": true,
+  "scripts": {
+    "build": "echo \"No build required\"",
+    "deploy": "cdk deploy",
+    "diff": "cdk diff",
+    "synth": "cdk synth",
+    "destroy": "cdk destroy",
+    "bootstrap": "cdk bootstrap"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.76.0",
+    "constructs": "^10.2.0"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.76.0"
+  }
+}

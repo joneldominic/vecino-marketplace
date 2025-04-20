@@ -20,33 +20,39 @@ This is a monorepo containing:
 ## Getting Started
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd vecino-marketplace
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Set up environment variables:
+
    ```bash
    cp .env.example .env
    # Then edit .env with your configuration
    ```
 
 4. Start the development services (MongoDB and Redis):
+
    ```bash
    docker-compose up -d mongodb redis
    ```
 
 5. Start the backend:
+
    ```bash
    npm run start:backend
    ```
 
 6. In a new terminal, start the frontend:
+
    ```bash
    npm run start:frontend
    ```
