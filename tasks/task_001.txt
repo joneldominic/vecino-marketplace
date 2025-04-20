@@ -27,7 +27,7 @@ Verify CI pipeline runs successfully with passing linting and tests. Ensure Dock
 7. Set up initial commit and push to GitHub
 8. Test by ensuring the repository structure is properly created and accessible
 
-## 2. Set Up Frontend with Vite, React, Zustand, and TanStack Query [pending]
+## 2. Set Up Frontend with Vite, React, Zustand, and TanStack Query [done]
 ### Dependencies: 1.1
 ### Description: Initialize and configure the frontend application with Vite, React, TypeScript, Zustand for state management, and TanStack Query for data fetching.
 ### Details:
@@ -45,7 +45,7 @@ Verify CI pipeline runs successfully with passing linting and tests. Ensure Dock
 5. Create a simple test component to verify the setup
 6. Test by running the development server and ensuring the application renders correctly
 
-## 3. Set Up Backend with NestJS, MongoDB, and Redis [pending]
+## 3. Set Up Backend with NestJS, MongoDB, and Redis [done]
 ### Dependencies: 1.1
 ### Description: Initialize and configure the backend application with NestJS, TypeScript, MongoDB for database, and Redis for caching.
 ### Details:

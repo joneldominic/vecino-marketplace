@@ -27,7 +27,7 @@
             1
           ],
           "details": "1. Navigate to `/frontend` directory\n2. Initialize a new Vite project with React and TypeScript template\n3. Install and configure dependencies:\n   - Zustand for state management\n   - TanStack Query for API data fetching\n   - React Router for navigation\n   - Axios for HTTP requests\n4. Set up the basic application structure:\n   - Create `/src/components`, `/src/pages`, `/src/hooks`, `/src/store`, and `/src/api` directories\n   - Set up a basic Zustand store\n   - Configure TanStack Query client\n5. Create a simple test component to verify the setup\n6. Test by running the development server and ensuring the application renders correctly",
-          "status": "pending",
+          "status": "done",
           "parentTaskId": 1
         },
         {
@@ -38,7 +38,7 @@
             1
           ],
           "details": "1. Navigate to `/backend` directory\n2. Initialize a new NestJS project using the Nest CLI\n3. Install and configure dependencies:\n   - MongoDB driver and Mongoose for database operations\n   - Redis client for caching\n   - Class-validator and class-transformer for DTO validation\n   - Passport and JWT for authentication\n4. Set up environment configuration with dotenv\n5. Create database connection modules for MongoDB and Redis\n6. Implement health check endpoint\n7. Set up basic module structure with controllers and services\n8. Test by running the server and verifying the health check endpoint works",
-          "status": "pending",
+          "status": "done",
           "parentTaskId": 1
         },
         {
