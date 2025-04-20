@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, _Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
 
@@ -13,7 +22,11 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(id);
+    const user = await this.usersService.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
   }
 
   @Post()
@@ -21,13 +34,21 @@ export class UsersController {
     return this.usersService.create(userData);
   }
 
-  @Put(':id')
+  @Patch(':id')
   async update(@Param('id') id: string, @Body() userData: Partial<User>): Promise<User> {
-    return this.usersService.update(id, userData);
+    const updatedUser = await this.usersService.update(id, userData);
+    if (!updatedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return updatedUser;
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<User> {
-    return this.usersService.remove(id);
+    const deletedUser = await this.usersService.remove(id);
+    if (!deletedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return deletedUser;
   }
 }

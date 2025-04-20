@@ -4,15 +4,19 @@ services:
   # MongoDB database
   mongodb:
     image: mongo:6.0
-    container_name: vecino-mongodb-dev
-    ports:
-      - '27017:27017'
+    container_name: vecino-mongodb-prod
+    restart: always
     volumes:
       - mongodb_data:/data/db
     environment:
       - MONGO_INITDB_DATABASE=vecino-marketplace
     networks:
       - vecino-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
     healthcheck:
       test: ['CMD', 'mongo', '--eval', "db.adminCommand('ping')"]
       interval: 10s
@@ -22,32 +26,30 @@ services:
   # Redis for caching
   redis:
     image: redis:7.0-alpine
-    container_name: vecino-redis-dev
-    ports:
-      - '6379:6379'
+    container_name: vecino-redis-prod
+    restart: always
     volumes:
       - redis_data:/data
     networks:
       - vecino-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Backend service (development)
+  # Backend service (production)
   backend:
     build:
       context: .
-      dockerfile: backend/Dockerfile.dev
-    container_name: vecino-backend-dev
-    restart: unless-stopped
-    ports:
-      - '4000:4000'
-    volumes:
-      - ./backend:/app/backend
-      - ./shared:/app/shared
-      - /app/backend/node_modules
+      dockerfile: backend/Dockerfile
+    container_name: vecino-backend-prod
+    restart: always
     depends_on:
       mongodb:
         condition: service_healthy
@@ -56,32 +58,37 @@ services:
     env_file: .env
     networks:
       - vecino-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:4000/health']
+      test: ['CMD', 'curl', '-f', 'http://localhost:4000/health || exit 1']
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 10s
 
-  # Frontend service (development)
+  # Frontend service (production)
   frontend:
     build:
       context: .
-      dockerfile: frontend/Dockerfile.dev
-    container_name: vecino-frontend-dev
-    restart: unless-stopped
+      dockerfile: frontend/Dockerfile
+    container_name: vecino-frontend-prod
+    restart: always
     ports:
-      - '3000:3000'
-    volumes:
-      - ./frontend:/app/frontend
-      - ./shared:/app/shared
-      - /app/frontend/node_modules
-    env_file: .env
-    networks:
-      - vecino-network
+      - '80:80'
     depends_on:
       backend:
         condition: service_healthy
+    networks:
+      - vecino-network
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '10m'
+        max-file: '3'
 
 networks:
   vecino-network:

@@ -24,7 +24,14 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "test": "npm run test --workspaces",
     "test:coverage": "npm run test:coverage --workspaces",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up",
+    "docker:dev:build": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "docker:prod": "docker-compose -f docker-compose.prod.yml up",
+    "docker:prod:build": "docker-compose -f docker-compose.prod.yml up --build",
+    "docker:prod:down": "docker-compose -f docker-compose.prod.yml down",
+    "docker:db": "docker-compose -f docker-compose.dev.yml up mongodb redis"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

@@ -1,0 +1,48 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Node.js
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build directories
+**/dist
+**/build
+**/.next
+**/.nuxt
+**/.vuepress/dist
+**/.serverless
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Task files
+tasks
+./tasks.json
+
+# Testing
+**/coverage
+
+# Cache
+.npm
+.eslintcache
+.stylelintcache
+.cache 

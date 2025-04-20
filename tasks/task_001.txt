@@ -76,7 +76,7 @@ Verify CI pipeline runs successfully with passing linting and tests. Ensure Dock
 6. Create sample tests for both frontend and backend
 7. Test by running lint and test commands from the root directory
 
-## 5. Create Docker Configuration [pending]
+## 5. Create Docker Configuration [done]
 ### Dependencies: 1.2, 1.3
 ### Description: Set up Docker and Docker Compose files for local development and production environments.
 ### Details:
