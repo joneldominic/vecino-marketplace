@@ -80,7 +80,7 @@
           "id": 1,
           "title": "Define Domain Bounded Contexts and Core Entities",
           "description": "Establish the domain model structure by defining bounded contexts (Catalog, Ordering, Messaging) and core entities with their relationships following DDD principles.",
-          "status": "pending",
+          "status": "done",
           "dependencies": [],
           "details": "Create a domain model diagram showing bounded contexts and their relationships. Define entity classes for each context: User (shared), Product/Category (Catalog), Order/OrderItem (Ordering), Message/Conversation (Messaging), and Review (Catalog). Implement value objects for complex attributes like Address, Money, ProductSpecification. Ensure proper encapsulation of business rules within entities. Document aggregate roots and entity relationships."
         },
@@ -88,9 +88,9 @@
           "id": 2,
           "title": "Implement Mongoose Schemas and Validation",
           "description": "Create Mongoose schemas for all domain entities with proper validation rules, indexes, and relationships.",
-          "status": "pending",
+          "status": "done",
           "dependencies": [1],
-          "details": "Implement Mongoose schemas for users (with authentication fields, profile data), products (with text indexes for search, category references), orders (with line items, status tracking), messages (with conversation threading), and reviews (with product references). Add validation rules for each field. Create indexes for frequently queried fields. Implement schema methods for common operations. Set up text indexes for product search. Document each schema with JSDoc comments."
+          "details": "Implement Mongoose schemas for users (with authentication fields, profile data), products (with text indexes for search, category references), orders (with line items, status tracking), messages (with conversation threading), and reviews (with product references). Add validation rules for each field. Create indexes for frequently queried fields. Implement schema methods for common operations. Set up text indexes for product search. Document each schema with JSDoc comments.\n\n<info added on 2025-04-20T14:33:24.705Z>\nFor the MoneySchema in common.schema.ts, implement the following changes:\n\n```typescript\n// Update the MoneySchema to use PHP as the only currency option\nconst MoneySchema = new Schema({\n  amount: {\n    type: Number,\n    required: true,\n    min: 0,\n    validate: {\n      validator: function(v) {\n        // Ensure amount has at most 2 decimal places\n        return /^\\d+(\\.\\d{1,2})?$/.test(v.toString());\n      },\n      message: props => `${props.value} is not a valid currency amount (max 2 decimal places)`\n    }\n  },\n  currency: {\n    type: String,\n    required: true,\n    default: 'PHP',\n    enum: ['PHP'], // Restricted to only PHP\n    uppercase: true\n  }\n});\n\n// Add a method to format the money value with PHP symbol\nMoneySchema.methods.format = function() {\n  return `₱${this.amount.toFixed(2)}`;\n};\n\n// Add static method to create money object with validation\nMoneySchema.statics.createPHP = function(amount) {\n  return { amount: parseFloat(amount), currency: 'PHP' };\n};\n```\n\nUpdate any references to currency selection in related schemas (Product, Order, etc.) to remove currency selection options and standardize on PHP.\n</info added on 2025-04-20T14:33:24.705Z>"
         },
         {
           "id": 3,

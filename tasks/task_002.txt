@@ -11,17 +11,58 @@ Create Mongoose schemas for users, products, orders, messages, and reviews colle
 Write unit tests for models and repositories with 80%+ coverage. Create integration tests that verify database operations. Test indexes for performance with sample data.
 
 # Subtasks:
-## 1. Define Domain Bounded Contexts and Core Entities [pending]
+## 1. Define Domain Bounded Contexts and Core Entities [done]
 ### Dependencies: None
 ### Description: Establish the domain model structure by defining bounded contexts (Catalog, Ordering, Messaging) and core entities with their relationships following DDD principles.
 ### Details:
 Create a domain model diagram showing bounded contexts and their relationships. Define entity classes for each context: User (shared), Product/Category (Catalog), Order/OrderItem (Ordering), Message/Conversation (Messaging), and Review (Catalog). Implement value objects for complex attributes like Address, Money, ProductSpecification. Ensure proper encapsulation of business rules within entities. Document aggregate roots and entity relationships.
 
-## 2. Implement Mongoose Schemas and Validation [pending]
+## 2. Implement Mongoose Schemas and Validation [done]
 ### Dependencies: 2.1
 ### Description: Create Mongoose schemas for all domain entities with proper validation rules, indexes, and relationships.
 ### Details:
 Implement Mongoose schemas for users (with authentication fields, profile data), products (with text indexes for search, category references), orders (with line items, status tracking), messages (with conversation threading), and reviews (with product references). Add validation rules for each field. Create indexes for frequently queried fields. Implement schema methods for common operations. Set up text indexes for product search. Document each schema with JSDoc comments.
+
+<info added on 2025-04-20T14:33:24.705Z>
+For the MoneySchema in common.schema.ts, implement the following changes:
+
+```typescript
+// Update the MoneySchema to use PHP as the only currency option
+const MoneySchema = new Schema({
+  amount: {
+    type: Number,
+    required: true,
+    min: 0,
+    validate: {
+      validator: function(v) {
+        // Ensure amount has at most 2 decimal places
+        return /^\d+(\.\d{1,2})?$/.test(v.toString());
+      },
+      message: props => `${props.value} is not a valid currency amount (max 2 decimal places)`
+    }
+  },
+  currency: {
+    type: String,
+    required: true,
+    default: 'PHP',
+    enum: ['PHP'], // Restricted to only PHP
+    uppercase: true
+  }
+});
+
+// Add a method to format the money value with PHP symbol
+MoneySchema.methods.format = function() {
+  return `₱${this.amount.toFixed(2)}`;
+};
+
+// Add static method to create money object with validation
+MoneySchema.statics.createPHP = function(amount) {
+  return { amount: parseFloat(amount), currency: 'PHP' };
+};
+```
+
+Update any references to currency selection in related schemas (Product, Order, etc.) to remove currency selection options and standardize on PHP.
+</info added on 2025-04-20T14:33:24.705Z>
 
 ## 3. Create Repository Interfaces and Implementations [pending]
 ### Dependencies: 2.2
