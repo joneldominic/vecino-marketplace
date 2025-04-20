@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.enableCors();
@@ -20,6 +20,7 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(4000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  // eslint-disable-next-line no-console
+  console.info(`Application is running on: ${await app.getUrl()}`);
 }
-bootstrap(); 
+bootstrap();

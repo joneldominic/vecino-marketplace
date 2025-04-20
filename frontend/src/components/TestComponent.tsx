@@ -11,7 +11,7 @@ export default function TestComponent() {
   // Use our Zustand stores
   const { isDarkMode, toggleDarkMode } = useUiStore();
   const { isAuthenticated, login, logout } = useAuthStore();
-  
+
   // Use TanStack Query for data fetching
   const { data, isLoading, error } = useQuery({
     queryKey: ['test-data'],
@@ -19,9 +19,11 @@ export default function TestComponent() {
   });
 
   return (
-    <div className={`p-6 rounded-lg ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+    <div
+      className={`p-6 rounded-lg ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}
+    >
       <h2 className="text-xl font-bold mb-4">Component Test</h2>
-      
+
       <div className="mb-4">
         <h3 className="font-semibold mb-2">Zustand Store Test:</h3>
         <div className="space-y-2">
@@ -66,4 +68,4 @@ export default function TestComponent() {
       </div>
     </div>
   );
-} 
+}

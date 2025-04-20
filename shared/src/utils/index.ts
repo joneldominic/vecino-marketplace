@@ -1,2 +1,2 @@
 // Export all utility functions from this directory
-export * from './validation'; 
+export * from './validation';

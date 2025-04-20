@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
@@ -23,26 +24,22 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     return this.redisClient;
   }
 
-  async set(key: string, value: any, ttl?: number): Promise<void> {
-    const serializedValue = JSON.stringify(value);
-    
+  async set<T>(key: string, value: T, ttl?: number): Promise<void> {
+    const serialized = JSON.stringify(value);
+
     if (ttl) {
-      await this.redisClient.setex(key, ttl, serializedValue);
+      await this.redisClient.setex(key, ttl, serialized);
     } else {
-      await this.redisClient.set(key, serializedValue);
+      await this.redisClient.set(key, serialized);
     }
   }
 
   async get<T>(key: string): Promise<T | null> {
-    const value = await this.redisClient.get(key);
-    
-    if (!value) {
-      return null;
-    }
-    
     try {
-      return JSON.parse(value) as T;
-    } catch (error) {
+      const data = await this.redisClient.get(key);
+      return data ? (JSON.parse(data) as T) : null;
+    } catch (_error) {
+      // eslint-disable-line @typescript-eslint/no-unused-vars
       return null;
     }
   }
@@ -54,4 +51,4 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async clear(): Promise<void> {
     await this.redisClient.flushall();
   }
-} 
+}

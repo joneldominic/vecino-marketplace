@@ -16,13 +16,13 @@ export function validate<T>(schema: z.ZodType<T>, data: unknown): T {
  * @param data Data to validate
  * @returns Validated data or null if validation fails
  */
-export function validateSafe<T>(schema: z.ZodType<T>, data: unknown): T | null {
+export const validateSafe = <T>(schema: z.ZodType<T>, data: unknown): T | null => {
   try {
     return schema.parse(data);
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
-}
+};
 
 /**
  * Transform a Zod error into a human-readable error message
@@ -31,11 +31,11 @@ export function validateSafe<T>(schema: z.ZodType<T>, data: unknown): T | null {
  */
 export function formatZodError(error: z.ZodError): Record<string, string> {
   const errors: Record<string, string> = {};
-  
+
   for (const issue of error.errors) {
     const path = issue.path.join('.');
     errors[path] = issue.message;
   }
-  
+
   return errors;
-} 
+}

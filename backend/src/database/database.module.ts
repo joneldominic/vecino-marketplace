@@ -6,4 +6,4 @@ import { RedisModule } from './redis/redis.module';
   imports: [MongoDBModule, RedisModule],
   exports: [MongoDBModule, RedisModule],
 })
-export class DatabaseModule {} 
+export class DatabaseModule {}

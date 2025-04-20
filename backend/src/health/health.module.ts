@@ -6,4 +6,4 @@ import { DatabaseModule } from '../database/database.module';
   imports: [DatabaseModule],
   controllers: [HealthController],
 })
-export class HealthModule {} 
+export class HealthModule {}

@@ -28,4 +28,4 @@ export class User extends Document {
   phone?: string;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User); 
+export const UserSchema = SchemaFactory.createForClass(User);

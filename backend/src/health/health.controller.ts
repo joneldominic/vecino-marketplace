@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Controller, Get } from '@nestjs/common';
+import { getConnectionToken } from '@nestjs/mongoose';
 import { RedisService } from '../database/redis/redis.service';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
@@ -12,24 +14,22 @@ export class HealthController {
 
   @Get()
   async check() {
-    const mongoStatus = this.mongoConnection.readyState === 1 ? 'ok' : 'error';
-    
-    let redisStatus = 'error';
+    const response = {
+      status: 'ok',
+      services: {
+        mongodb: this.mongoConnection.readyState === 1 ? 'ok' : 'error',
+        redis: 'ok',
+      },
+      timestamp: new Date().toISOString(),
+    };
+
     try {
-      const redis = this.redisService.getClient();
-      await redis.ping();
-      redisStatus = 'ok';
-    } catch (error) {
-      redisStatus = 'error';
+      await this.redisService.getClient().ping();
+    } catch (_error) {
+      // eslint-disable-line @typescript-eslint/no-unused-vars
+      response.services.redis = 'error';
     }
 
-    return {
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      services: {
-        mongodb: mongoStatus,
-        redis: redisStatus,
-      },
-    };
+    return response;
   }
-} 
+}

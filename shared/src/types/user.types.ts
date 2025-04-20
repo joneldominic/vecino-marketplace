@@ -34,4 +34,4 @@ export const RegisterSchema = UserSchema.extend({
   password: z.string().min(6),
 }).omit({ id: true, createdAt: true, updatedAt: true });
 
-export type RegisterRequest = z.infer<typeof RegisterSchema>; 
+export type RegisterRequest = z.infer<typeof RegisterSchema>;

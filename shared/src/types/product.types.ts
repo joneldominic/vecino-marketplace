@@ -39,9 +39,9 @@ export const ProductSchema = z.object({
 export type Product = z.infer<typeof ProductSchema>;
 
 // Product create/update request type
-export const CreateProductSchema = ProductSchema.omit({ 
-  id: true, 
-  createdAt: true, 
+export const CreateProductSchema = ProductSchema.omit({
+  id: true,
+  createdAt: true,
   updatedAt: true,
   sellerId: true,
 });
@@ -50,4 +50,4 @@ export type CreateProductRequest = z.infer<typeof CreateProductSchema>;
 
 export const UpdateProductSchema = CreateProductSchema.partial();
 
-export type UpdateProductRequest = z.infer<typeof UpdateProductSchema>; 
+export type UpdateProductRequest = z.infer<typeof UpdateProductSchema>;

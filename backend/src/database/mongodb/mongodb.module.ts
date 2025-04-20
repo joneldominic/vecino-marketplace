@@ -8,7 +8,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI', 'mongodb://localhost:27017/vecino-marketplace'),
+        uri: configService.get<string>(
+          'MONGODB_URI',
+          'mongodb://localhost:27017/vecino-marketplace',
+        ),
         useNewUrlParser: true,
         useUnifiedTopology: true,
       }),
@@ -16,4 +19,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   exports: [MongooseModule],
 })
-export class MongoDBModule {} 
+export class MongoDBModule {}
