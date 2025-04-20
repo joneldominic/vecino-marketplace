@@ -96,9 +96,9 @@
           "id": 3,
           "title": "Create Repository Interfaces and Implementations",
           "description": "Develop repository interfaces and concrete implementations for each domain entity to abstract database operations.",
-          "status": "pending",
+          "status": "done",
           "dependencies": [2],
-          "details": "Create a base Repository interface with standard CRUD operations. Implement entity-specific repositories (UserRepository, ProductRepository, OrderRepository, MessageRepository, ReviewRepository) with specialized query methods. Use the repository pattern to abstract database access from domain logic. Implement pagination for collection queries. Add methods for complex domain-specific queries. Include transaction support for operations spanning multiple entities."
+          "details": "Create a base Repository interface with standard CRUD operations. Implement entity-specific repositories (UserRepository, ProductRepository, OrderRepository, MessageRepository, ReviewRepository) with specialized query methods. Use the repository pattern to abstract database access from domain logic. Implement pagination for collection queries. Add methods for complex domain-specific queries. Include transaction support for operations spanning multiple entities.\n\n<info added on 2025-04-20T15:19:36.806Z>\nFor MongoDB implementation specifics:\n\n1. **BaseMapper Interface**: Define a generic interface for bidirectional mapping between domain entities and MongoDB documents:\n```typescript\ninterface BaseMapper<Entity, Document> {\n  toDomain(document: Document): Entity;\n  toDocument(entity: Entity): Document;\n}\n```\n\n2. **ProductMapper Implementation**: Create concrete mapper for Product entities:\n```typescript\nclass ProductMapper implements BaseMapper<Product, ProductDocument> {\n  toDomain(doc: ProductDocument): Product {\n    return new Product({\n      id: doc._id.toString(),\n      name: doc.name,\n      price: doc.price,\n      // other fields\n    });\n  }\n  \n  toDocument(entity: Product): ProductDocument {\n    return {\n      name: entity.name,\n      price: entity.price,\n      // other fields\n    };\n  }\n}\n```\n\n3. **BaseMongoDBRepository**: Implement with MongoDB-specific operations:\n```typescript\nclass BaseMongoDBRepository<T, D> {\n  constructor(\n    protected readonly collection: Collection<D>,\n    protected readonly mapper: BaseMapper<T, D>\n  ) {}\n  \n  // CRUD implementations using MongoDB driver\n  // Transaction support using MongoDB sessions\n}\n```\n\n4. **MongoDB-specific query methods**: Add specialized methods for MongoDB aggregation pipelines and complex queries with proper indexing strategies.\n\n5. **Dependency injection setup**: Configure MongoDB connection, repositories, and services in the module system.\n\n6. **Error handling**: Implement MongoDB-specific error handling and retry mechanisms for network issues.\n</info added on 2025-04-20T15:19:36.806Z>\n\n<info added on 2025-04-20T15:20:27.745Z>\n<info added on 2025-04-21T09:45:12.103Z>\n## ProductMongoDBRepository Implementation Details\n\n1. **Repository Structure**:\n```typescript\nclass ProductMongoDBRepository extends BaseMongoDBRepository<Product, ProductDocument> implements ProductRepository {\n  constructor(\n    @Inject('MONGODB_CONNECTION') connection: Connection,\n    private readonly productMapper: ProductMapper\n  ) {\n    super(connection.collection('products'), productMapper);\n    // Create text indexes for search functionality\n    this.collection.createIndex({ name: 'text', description: 'text', tags: 'text' });\n    // Create geospatial index for location-based queries\n    this.collection.createIndex({ location: '2dsphere' });\n  }\n  \n  // Interface implementation methods below\n}\n```\n\n2. **Specialized Query Methods**:\n```typescript\n// Find products by seller with pagination\nasync findBySeller(sellerId: string, options: PaginationOptions): Promise<PaginatedResult<Product>> {\n  const { skip, limit } = options;\n  const query = { sellerId: new ObjectId(sellerId) };\n  \n  const [products, total] = await Promise.all([\n    this.collection.find(query).skip(skip).limit(limit).toArray(),\n    this.collection.countDocuments(query)\n  ]);\n  \n  return {\n    items: products.map(doc => this.mapper.toDomain(doc)),\n    total,\n    page: options.page,\n    pageSize: options.pageSize\n  };\n}\n\n// Find products by geolocation with radius (in kilometers)\nasync findByLocation(coordinates: [number, number], radiusKm: number): Promise<Product[]> {\n  const docs = await this.collection.find({\n    location: {\n      $near: {\n        $geometry: {\n          type: \"Point\",\n          coordinates\n        },\n        $maxDistance: radiusKm * 1000 // Convert to meters\n      }\n    }\n  }).toArray();\n  \n  return docs.map(doc => this.mapper.toDomain(doc));\n}\n\n// Full text search with relevance scoring\nasync searchProducts(searchTerm: string, options: SearchOptions): Promise<PaginatedResult<Product>> {\n  const { skip, limit, minScore = 0.5 } = options;\n  \n  const pipeline = [\n    { $match: { $text: { $search: searchTerm } } },\n    { $addFields: { score: { $meta: \"textScore\" } } },\n    { $match: { score: { $gte: minScore } } },\n    { $sort: { score: -1 } },\n    { $skip: skip },\n    { $limit: limit }\n  ];\n  \n  const [results, countResults] = await Promise.all([\n    this.collection.aggregate(pipeline).toArray(),\n    this.collection.aggregate([\n      { $match: { $text: { $search: searchTerm } } },\n      { $addFields: { score: { $meta: \"textScore\" } } },\n      { $match: { score: { $gte: minScore } } },\n      { $count: \"total\" }\n    ]).toArray()\n  ]);\n  \n  return {\n    items: results.map(doc => this.mapper.toDomain(doc)),\n    total: countResults[0]?.total || 0,\n    page: options.page,\n    pageSize: options.pageSize\n  };\n}\n```\n\n3. **Image Management**:\n```typescript\n// Update product images with primary image handling\nasync updateProductImages(productId: string, images: ProductImage[]): Promise<void> {\n  const primaryImage = images.find(img => img.isPrimary);\n  \n  // Ensure one primary image exists\n  if (!primaryImage && images.length > 0) {\n    images[0].isPrimary = true;\n  }\n  \n  await this.collection.updateOne(\n    { _id: new ObjectId(productId) },\n    { \n      $set: { \n        images,\n        primaryImageUrl: images.find(img => img.isPrimary)?.url || null,\n        updatedAt: new Date()\n      } \n    }\n  );\n}\n```\n\n4. **Bulk Operations**:\n```typescript\n// Bulk update product status (useful for admin operations)\nasync bulkUpdateStatus(productIds: string[], status: ProductStatus): Promise<number> {\n  const result = await this.collection.updateMany(\n    { _id: { $in: productIds.map(id => new ObjectId(id)) } },\n    { $set: { status, updatedAt: new Date() } }\n  );\n  \n  return result.modifiedCount;\n}\n```\n\n5. **Transaction Example**:\n```typescript\n// Update product inventory with transaction support\nasync decrementInventory(productId: string, quantity: number, session?: ClientSession): Promise<boolean> {\n  const options = session ? { session } : undefined;\n  \n  const result = await this.collection.updateOne(\n    { \n      _id: new ObjectId(productId), \n      inventoryCount: { $gte: quantity } \n    },\n    { \n      $inc: { inventoryCount: -quantity },\n      $set: { updatedAt: new Date() }\n    },\n    options\n  );\n  \n  return result.modifiedCount === 1;\n}\n```\n</info added on 2025-04-21T09:45:12.103Z>\n</info added on 2025-04-20T15:20:27.745Z>\n\n<info added on 2025-04-20T16:20:26.557Z>\n## UserMongoDBRepository Implementation Details\n\n1. **Repository Implementation**:\n```typescript\nclass UserMongoDBRepository extends BaseMongoDBRepository<User, UserDocument> implements UserRepository {\n  constructor(\n    @Inject('MONGODB_CONNECTION') connection: Connection,\n    private readonly userMapper: UserMapper\n  ) {\n    super(connection.collection('users'), userMapper);\n    // Create indexes for common queries\n    this.collection.createIndex({ email: 1 }, { unique: true });\n    this.collection.createIndex({ username: 1 }, { unique: true });\n    this.collection.createIndex({ \"profile.displayName\": 1 });\n  }\n}\n```\n\n2. **Authentication Methods**:\n```typescript\nasync findByCredentials(email: string, hashedPassword: string): Promise<User | null> {\n  const doc = await this.collection.findOne({ \n    email: email.toLowerCase(),\n    password: hashedPassword,\n    status: 'active'\n  });\n  \n  return doc ? this.mapper.toDomain(doc) : null;\n}\n\nasync updateLastLogin(userId: string): Promise<void> {\n  await this.collection.updateOne(\n    { _id: new ObjectId(userId) },\n    { $set: { lastLoginAt: new Date() } }\n  );\n}\n```\n\n3. **Profile Management**:\n```typescript\nasync updateProfile(userId: string, profileData: Partial<UserProfile>): Promise<User> {\n  const updateData = Object.entries(profileData).reduce((acc, [key, value]) => {\n    acc[`profile.${key}`] = value;\n    return acc;\n  }, {} as Record<string, any>);\n  \n  const result = await this.collection.findOneAndUpdate(\n    { _id: new ObjectId(userId) },\n    { \n      $set: {\n        ...updateData,\n        updatedAt: new Date()\n      }\n    },\n    { returnDocument: 'after' }\n  );\n  \n  if (!result) {\n    throw new EntityNotFoundError('User', userId);\n  }\n  \n  return this.mapper.toDomain(result);\n}\n```\n\n4. **Social Connections**:\n```typescript\nasync addFollowing(userId: string, followingId: string): Promise<void> {\n  await this.collection.updateOne(\n    { _id: new ObjectId(userId) },\n    { \n      $addToSet: { following: new ObjectId(followingId) },\n      $set: { updatedAt: new Date() }\n    }\n  );\n}\n\nasync removeFollowing(userId: string, followingId: string): Promise<void> {\n  await this.collection.updateOne(\n    { _id: new ObjectId(userId) },\n    { \n      $pull: { following: new ObjectId(followingId) },\n      $set: { updatedAt: new Date() }\n    }\n  );\n}\n\nasync getFollowers(userId: string, options: PaginationOptions): Promise<PaginatedResult<User>> {\n  const { skip, limit } = options;\n  \n  const pipeline = [\n    { $match: { following: new ObjectId(userId) } },\n    { $skip: skip },\n    { $limit: limit }\n  ];\n  \n  const [users, totalCount] = await Promise.all([\n    this.collection.aggregate(pipeline).toArray(),\n    this.collection.countDocuments({ following: new ObjectId(userId) })\n  ]);\n  \n  return {\n    items: users.map(doc => this.mapper.toDomain(doc)),\n    total: totalCount,\n    page: options.page,\n    pageSize: options.pageSize\n  };\n}\n```\n\n5. **Security Features**:\n```typescript\nasync updatePassword(userId: string, hashedPassword: string): Promise<void> {\n  const result = await this.collection.updateOne(\n    { _id: new ObjectId(userId) },\n    { \n      $set: { \n        password: hashedPassword,\n        passwordUpdatedAt: new Date(),\n        updatedAt: new Date()\n      }\n    }\n  );\n  \n  if (result.matchedCount === 0) {\n    throw new EntityNotFoundError('User', userId);\n  }\n}\n\nasync createPasswordResetToken(email: string): Promise<string | null> {\n  const token = crypto.randomBytes(32).toString('hex');\n  const expiresAt = new Date();\n  expiresAt.setHours(expiresAt.getHours() + 24); // 24 hour expiration\n  \n  const result = await this.collection.updateOne(\n    { email: email.toLowerCase(), status: 'active' },\n    { \n      $set: { \n        passwordResetToken: token,\n        passwordResetExpires: expiresAt,\n        updatedAt: new Date()\n      }\n    }\n  );\n  \n  return result.matchedCount === 1 ? token : null;\n}\n```\n</info added on 2025-04-20T16:20:26.557Z>"
         },
         {
           "id": 4,
@@ -115,6 +115,60 @@
           "status": "pending",
           "dependencies": [2, 4],
           "details": "Implement migration framework (like migrate-mongo) to handle schema changes. Create initial migration script to set up collections and indexes. Develop data seeding scripts for development and testing environments with sample users, products, orders, and reviews. Implement versioning for migrations. Add CLI commands to run migrations and seeds. Create documentation for database maintenance operations. Implement backup and restore procedures."
+        },
+        {
+          "id": 6,
+          "title": "Review and improve other repository implementations",
+          "description": "Review other repositories for similar patterns that could benefit from the improvements made to UserMongoDBRepository",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 2
+        },
+        {
+          "id": 7,
+          "title": "Address TypeScript warnings",
+          "description": "Improve type safety by addressing TypeScript 'any' warnings in repository implementations",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 2
+        },
+        {
+          "id": 8,
+          "title": "Document repository patterns",
+          "description": "Create documentation for repository patterns and best practices used in the codebase",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 2
+        },
+        {
+          "id": 9,
+          "title": "Add edge case tests",
+          "description": "Implement additional unit tests for repository edge cases and error handling scenarios",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 2
+        },
+        {
+          "id": 10,
+          "title": "Run performance tests",
+          "description": "Benchmark repository operations and optimize critical queries with proper indexing",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 2
+        },
+        {
+          "id": 11,
+          "title": "Verify frontend integration",
+          "description": "Test frontend integration with repositories",
+          "details": "",
+          "status": "pending",
+          "dependencies": [],
+          "parentTaskId": 2
         }
       ]
     },

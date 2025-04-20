@@ -64,11 +64,367 @@ MoneySchema.statics.createPHP = function(amount) {
 Update any references to currency selection in related schemas (Product, Order, etc.) to remove currency selection options and standardize on PHP.
 </info added on 2025-04-20T14:33:24.705Z>
 
-## 3. Create Repository Interfaces and Implementations [pending]
+## 3. Create Repository Interfaces and Implementations [done]
 ### Dependencies: 2.2
 ### Description: Develop repository interfaces and concrete implementations for each domain entity to abstract database operations.
 ### Details:
 Create a base Repository interface with standard CRUD operations. Implement entity-specific repositories (UserRepository, ProductRepository, OrderRepository, MessageRepository, ReviewRepository) with specialized query methods. Use the repository pattern to abstract database access from domain logic. Implement pagination for collection queries. Add methods for complex domain-specific queries. Include transaction support for operations spanning multiple entities.
+
+<info added on 2025-04-20T15:19:36.806Z>
+For MongoDB implementation specifics:
+
+1. **BaseMapper Interface**: Define a generic interface for bidirectional mapping between domain entities and MongoDB documents:
+```typescript
+interface BaseMapper<Entity, Document> {
+  toDomain(document: Document): Entity;
+  toDocument(entity: Entity): Document;
+}
+```
+
+2. **ProductMapper Implementation**: Create concrete mapper for Product entities:
+```typescript
+class ProductMapper implements BaseMapper<Product, ProductDocument> {
+  toDomain(doc: ProductDocument): Product {
+    return new Product({
+      id: doc._id.toString(),
+      name: doc.name,
+      price: doc.price,
+      // other fields
+    });
+  }
+  
+  toDocument(entity: Product): ProductDocument {
+    return {
+      name: entity.name,
+      price: entity.price,
+      // other fields
+    };
+  }
+}
+```
+
+3. **BaseMongoDBRepository**: Implement with MongoDB-specific operations:
+```typescript
+class BaseMongoDBRepository<T, D> {
+  constructor(
+    protected readonly collection: Collection<D>,
+    protected readonly mapper: BaseMapper<T, D>
+  ) {}
+  
+  // CRUD implementations using MongoDB driver
+  // Transaction support using MongoDB sessions
+}
+```
+
+4. **MongoDB-specific query methods**: Add specialized methods for MongoDB aggregation pipelines and complex queries with proper indexing strategies.
+
+5. **Dependency injection setup**: Configure MongoDB connection, repositories, and services in the module system.
+
+6. **Error handling**: Implement MongoDB-specific error handling and retry mechanisms for network issues.
+</info added on 2025-04-20T15:19:36.806Z>
+
+<info added on 2025-04-20T15:20:27.745Z>
+<info added on 2025-04-21T09:45:12.103Z>
+## ProductMongoDBRepository Implementation Details
+
+1. **Repository Structure**:
+```typescript
+class ProductMongoDBRepository extends BaseMongoDBRepository<Product, ProductDocument> implements ProductRepository {
+  constructor(
+    @Inject('MONGODB_CONNECTION') connection: Connection,
+    private readonly productMapper: ProductMapper
+  ) {
+    super(connection.collection('products'), productMapper);
+    // Create text indexes for search functionality
+    this.collection.createIndex({ name: 'text', description: 'text', tags: 'text' });
+    // Create geospatial index for location-based queries
+    this.collection.createIndex({ location: '2dsphere' });
+  }
+  
+  // Interface implementation methods below
+}
+```
+
+2. **Specialized Query Methods**:
+```typescript
+// Find products by seller with pagination
+async findBySeller(sellerId: string, options: PaginationOptions): Promise<PaginatedResult<Product>> {
+  const { skip, limit } = options;
+  const query = { sellerId: new ObjectId(sellerId) };
+  
+  const [products, total] = await Promise.all([
+    this.collection.find(query).skip(skip).limit(limit).toArray(),
+    this.collection.countDocuments(query)
+  ]);
+  
+  return {
+    items: products.map(doc => this.mapper.toDomain(doc)),
+    total,
+    page: options.page,
+    pageSize: options.pageSize
+  };
+}
+
+// Find products by geolocation with radius (in kilometers)
+async findByLocation(coordinates: [number, number], radiusKm: number): Promise<Product[]> {
+  const docs = await this.collection.find({
+    location: {
+      $near: {
+        $geometry: {
+          type: "Point",
+          coordinates
+        },
+        $maxDistance: radiusKm * 1000 // Convert to meters
+      }
+    }
+  }).toArray();
+  
+  return docs.map(doc => this.mapper.toDomain(doc));
+}
+
+// Full text search with relevance scoring
+async searchProducts(searchTerm: string, options: SearchOptions): Promise<PaginatedResult<Product>> {
+  const { skip, limit, minScore = 0.5 } = options;
+  
+  const pipeline = [
+    { $match: { $text: { $search: searchTerm } } },
+    { $addFields: { score: { $meta: "textScore" } } },
+    { $match: { score: { $gte: minScore } } },
+    { $sort: { score: -1 } },
+    { $skip: skip },
+    { $limit: limit }
+  ];
+  
+  const [results, countResults] = await Promise.all([
+    this.collection.aggregate(pipeline).toArray(),
+    this.collection.aggregate([
+      { $match: { $text: { $search: searchTerm } } },
+      { $addFields: { score: { $meta: "textScore" } } },
+      { $match: { score: { $gte: minScore } } },
+      { $count: "total" }
+    ]).toArray()
+  ]);
+  
+  return {
+    items: results.map(doc => this.mapper.toDomain(doc)),
+    total: countResults[0]?.total || 0,
+    page: options.page,
+    pageSize: options.pageSize
+  };
+}
+```
+
+3. **Image Management**:
+```typescript
+// Update product images with primary image handling
+async updateProductImages(productId: string, images: ProductImage[]): Promise<void> {
+  const primaryImage = images.find(img => img.isPrimary);
+  
+  // Ensure one primary image exists
+  if (!primaryImage && images.length > 0) {
+    images[0].isPrimary = true;
+  }
+  
+  await this.collection.updateOne(
+    { _id: new ObjectId(productId) },
+    { 
+      $set: { 
+        images,
+        primaryImageUrl: images.find(img => img.isPrimary)?.url || null,
+        updatedAt: new Date()
+      } 
+    }
+  );
+}
+```
+
+4. **Bulk Operations**:
+```typescript
+// Bulk update product status (useful for admin operations)
+async bulkUpdateStatus(productIds: string[], status: ProductStatus): Promise<number> {
+  const result = await this.collection.updateMany(
+    { _id: { $in: productIds.map(id => new ObjectId(id)) } },
+    { $set: { status, updatedAt: new Date() } }
+  );
+  
+  return result.modifiedCount;
+}
+```
+
+5. **Transaction Example**:
+```typescript
+// Update product inventory with transaction support
+async decrementInventory(productId: string, quantity: number, session?: ClientSession): Promise<boolean> {
+  const options = session ? { session } : undefined;
+  
+  const result = await this.collection.updateOne(
+    { 
+      _id: new ObjectId(productId), 
+      inventoryCount: { $gte: quantity } 
+    },
+    { 
+      $inc: { inventoryCount: -quantity },
+      $set: { updatedAt: new Date() }
+    },
+    options
+  );
+  
+  return result.modifiedCount === 1;
+}
+```
+</info added on 2025-04-21T09:45:12.103Z>
+</info added on 2025-04-20T15:20:27.745Z>
+
+<info added on 2025-04-20T16:20:26.557Z>
+## UserMongoDBRepository Implementation Details
+
+1. **Repository Implementation**:
+```typescript
+class UserMongoDBRepository extends BaseMongoDBRepository<User, UserDocument> implements UserRepository {
+  constructor(
+    @Inject('MONGODB_CONNECTION') connection: Connection,
+    private readonly userMapper: UserMapper
+  ) {
+    super(connection.collection('users'), userMapper);
+    // Create indexes for common queries
+    this.collection.createIndex({ email: 1 }, { unique: true });
+    this.collection.createIndex({ username: 1 }, { unique: true });
+    this.collection.createIndex({ "profile.displayName": 1 });
+  }
+}
+```
+
+2. **Authentication Methods**:
+```typescript
+async findByCredentials(email: string, hashedPassword: string): Promise<User | null> {
+  const doc = await this.collection.findOne({ 
+    email: email.toLowerCase(),
+    password: hashedPassword,
+    status: 'active'
+  });
+  
+  return doc ? this.mapper.toDomain(doc) : null;
+}
+
+async updateLastLogin(userId: string): Promise<void> {
+  await this.collection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: { lastLoginAt: new Date() } }
+  );
+}
+```
+
+3. **Profile Management**:
+```typescript
+async updateProfile(userId: string, profileData: Partial<UserProfile>): Promise<User> {
+  const updateData = Object.entries(profileData).reduce((acc, [key, value]) => {
+    acc[`profile.${key}`] = value;
+    return acc;
+  }, {} as Record<string, any>);
+  
+  const result = await this.collection.findOneAndUpdate(
+    { _id: new ObjectId(userId) },
+    { 
+      $set: {
+        ...updateData,
+        updatedAt: new Date()
+      }
+    },
+    { returnDocument: 'after' }
+  );
+  
+  if (!result) {
+    throw new EntityNotFoundError('User', userId);
+  }
+  
+  return this.mapper.toDomain(result);
+}
+```
+
+4. **Social Connections**:
+```typescript
+async addFollowing(userId: string, followingId: string): Promise<void> {
+  await this.collection.updateOne(
+    { _id: new ObjectId(userId) },
+    { 
+      $addToSet: { following: new ObjectId(followingId) },
+      $set: { updatedAt: new Date() }
+    }
+  );
+}
+
+async removeFollowing(userId: string, followingId: string): Promise<void> {
+  await this.collection.updateOne(
+    { _id: new ObjectId(userId) },
+    { 
+      $pull: { following: new ObjectId(followingId) },
+      $set: { updatedAt: new Date() }
+    }
+  );
+}
+
+async getFollowers(userId: string, options: PaginationOptions): Promise<PaginatedResult<User>> {
+  const { skip, limit } = options;
+  
+  const pipeline = [
+    { $match: { following: new ObjectId(userId) } },
+    { $skip: skip },
+    { $limit: limit }
+  ];
+  
+  const [users, totalCount] = await Promise.all([
+    this.collection.aggregate(pipeline).toArray(),
+    this.collection.countDocuments({ following: new ObjectId(userId) })
+  ]);
+  
+  return {
+    items: users.map(doc => this.mapper.toDomain(doc)),
+    total: totalCount,
+    page: options.page,
+    pageSize: options.pageSize
+  };
+}
+```
+
+5. **Security Features**:
+```typescript
+async updatePassword(userId: string, hashedPassword: string): Promise<void> {
+  const result = await this.collection.updateOne(
+    { _id: new ObjectId(userId) },
+    { 
+      $set: { 
+        password: hashedPassword,
+        passwordUpdatedAt: new Date(),
+        updatedAt: new Date()
+      }
+    }
+  );
+  
+  if (result.matchedCount === 0) {
+    throw new EntityNotFoundError('User', userId);
+  }
+}
+
+async createPasswordResetToken(email: string): Promise<string | null> {
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiresAt = new Date();
+  expiresAt.setHours(expiresAt.getHours() + 24); // 24 hour expiration
+  
+  const result = await this.collection.updateOne(
+    { email: email.toLowerCase(), status: 'active' },
+    { 
+      $set: { 
+        passwordResetToken: token,
+        passwordResetExpires: expiresAt,
+        updatedAt: new Date()
+      }
+    }
+  );
+  
+  return result.matchedCount === 1 ? token : null;
+}
+```
+</info added on 2025-04-20T16:20:26.557Z>
 
 ## 4. Configure Database Connections and Session Store [pending]
 ### Dependencies: 2.3
@@ -81,4 +437,40 @@ Configure MongoDB connection with proper error handling, retry logic, and connec
 ### Description: Create scripts for database migrations and initial data seeding to support development and deployment.
 ### Details:
 Implement migration framework (like migrate-mongo) to handle schema changes. Create initial migration script to set up collections and indexes. Develop data seeding scripts for development and testing environments with sample users, products, orders, and reviews. Implement versioning for migrations. Add CLI commands to run migrations and seeds. Create documentation for database maintenance operations. Implement backup and restore procedures.
+
+## 6. Review and improve other repository implementations [pending]
+### Dependencies: None
+### Description: Review other repositories for similar patterns that could benefit from the improvements made to UserMongoDBRepository
+### Details:
+
+
+## 7. Address TypeScript warnings [pending]
+### Dependencies: None
+### Description: Improve type safety by addressing TypeScript 'any' warnings in repository implementations
+### Details:
+
+
+## 8. Document repository patterns [pending]
+### Dependencies: None
+### Description: Create documentation for repository patterns and best practices used in the codebase
+### Details:
+
+
+## 9. Add edge case tests [pending]
+### Dependencies: None
+### Description: Implement additional unit tests for repository edge cases and error handling scenarios
+### Details:
+
+
+## 10. Run performance tests [pending]
+### Dependencies: None
+### Description: Benchmark repository operations and optimize critical queries with proper indexing
+### Details:
+
+
+## 11. Verify frontend integration [pending]
+### Dependencies: None
+### Description: Test frontend integration with repositories
+### Details:
+
 

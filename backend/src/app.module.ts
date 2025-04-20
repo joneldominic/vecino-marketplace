@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule as _DatabaseModule } from './database/database.module';
-import { HealthModule as _HealthModule } from './health/health.module';
-import { UsersModule as _UsersModule } from './users/users.module';
+import { DatabaseModule } from './database/database.module';
+import { HealthModule } from './health/health.module';
+import { UsersModule } from './users/users.module';
+import { InfrastructureModule } from './infrastructure/infrastructure.module';
+import { ProductsModule } from './modules/products/products.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -10,10 +12,14 @@ import { AppController } from './app.controller';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // Comment out database modules temporarily for testing the API endpoint
-    // DatabaseModule,
-    // HealthModule,
-    // UsersModule,
+    // Database & Infrastructure modules
+    DatabaseModule,
+    InfrastructureModule,
+
+    // Feature modules
+    HealthModule,
+    UsersModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [],

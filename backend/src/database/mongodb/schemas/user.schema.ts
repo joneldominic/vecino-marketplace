@@ -73,3 +73,8 @@ UserSchema.methods.isSeller = function (): boolean {
 UserSchema.methods.isBuyer = function (): boolean {
   return this.role === UserRole.BUYER;
 };
+
+/**
+ * Model name constant for dependency injection
+ */
+export const USER_MODEL = User.name;

@@ -1,0 +1,18 @@
+# Dependency directories
+node_modules/
+
+# Build directories
+dist/
+build/
+coverage/
+
+# Generated files
+*.generated.ts
+*.generated.js
+*.d.ts
+
+# Specific to monorepo structure
+**/dist/
+backend/dist/
+frontend/dist/
+shared/dist/ 
